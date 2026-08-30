@@ -1,0 +1,57 @@
+name: Private alpha CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: private-alpha-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  private-alpha:
+    name: Python 3.12 / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned CI tooling
+        run: >-
+          python -m pip install
+          --disable-pip-version-check
+          --requirement .github/requirements-private-alpha-ci.txt
+
+      - name: Run private-alpha gates
+        run: >-
+          python -B tools/run_private_alpha_ci.py
+          --repository-mode private-github
+          --expected-origin pdxvoiceteacher/triadicbrain-open-alpha
+          --evidence-root "${{ runner.temp }}/triadicbrain-private-alpha-${{ runner.os }}"
+
+      - name: Upload compact gate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: private-alpha-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/triadicbrain-private-alpha-${{ runner.os }}
+          if-no-files-found: error
+          retention-days: 14

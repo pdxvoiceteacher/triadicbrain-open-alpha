@@ -1,8 +1,11 @@
-# TriadicGate repository instructions
+# Triadic Brain private alpha-staging repository instructions
 
-TriadicGate becomes the canonical cognition-engine integration repository only after
-this PR is human-reviewed and merged. Nested component instructions remain binding,
-and a task may modify only components explicitly named in scope.
+This repository is the private Triadic Brain alpha-staging successor for bounded
+internal development and review. Private staging does not clear any rights HOLD,
+authorize public distribution or release, select an outbound license, or grant
+provider, publication, deployment, or memory-write authority. Nested component
+instructions remain binding, and a task may modify only components explicitly named
+in scope.
 
 ## Source precedence
 

@@ -1,24 +1,60 @@
 {
+  "active_source_file_count": 148,
+  "active_workflows": [
+    ".github/workflows/private-alpha-ci.yml"
+  ],
   "additional_inherited_count": 14,
   "authority_effect": "NONE",
-  "candidate_label": "v0.1.0-alpha.0-private.1",
-  "excluded_source_count": 8418,
-  "inherited_selected_count": 108,
+  "candidate_label": "v0.1.0-alpha.0-private.2-rc1",
+  "excluded_active_count": 8418,
+  "excluded_retired_count": 1,
+  "excluded_source_count": 8419,
+  "github_actions": "REMAIN_DISABLED",
+  "inherited_selected_count": 107,
+  "lineage_active_count": 107,
+  "lineage_retired_count": 1,
   "live_provider": "NOT_TESTED_REQUIRES_SEPARATE_HUMAN_PROVIDER_AUTHORIZATION",
   "merge_base": "308c5af03f9cf0cc4cbb3f2eb4d269ecca310ddd",
-  "oa00_nucleus_excluded_count": 3,
+  "modified_inherited_count": 1,
+  "oa00_nucleus_excluded_count": 4,
   "oa00_nucleus_reference_count": 97,
-  "oa00_nucleus_selected_count": 94,
+  "oa00_nucleus_selected_count": 93,
   "outbound_license": "NOT_SELECTED",
   "public_release": false,
   "public_release_eligible": false,
   "python_distribution_version": "0.1.0a0.dev1",
+  "record_status_values": [
+    "ACTIVE",
+    "RETIRED"
+  ],
+  "remote_push": false,
   "replaced_inherited_count": 1,
+  "repository_visibility": "PRIVATE",
+  "retired_inherited_count": 1,
+  "retired_source_file_count": 1,
+  "retired_workflows": [
+    ".github/workflows/triadicgate-ci.yml"
+  ],
+  "reviewed_baseline": {
+    "commit": "e2900baeba3bbc8cfd11bc9544f2ed48068b6b5c",
+    "tree": "ac52f7b0eb6972327cd71cab4113e2ba6b29ccb2"
+  },
+  "reviewed_baseline_tag": "v0.1.0-alpha.0-private.1",
+  "rights_active_count": 148,
+  "rights_clear_count": 0,
+  "rights_hold_count": 149,
+  "rights_retired_count": 1,
   "rights_status": "HOLD",
-  "schema": "uvlm.oa01.public_projection_manifest.v1",
+  "schema": "uvlm.gh01.public_projection_manifest.v1",
   "source_commit": "a3b306f6df40fc9862f2494f5048bd604ceafce0",
   "source_parent": "715292b6c18755b0e6de35f90b2648fdeab7332b",
   "source_tree": "49844480c4e826a28b51362d4f5abe714e6b9a5a",
   "source_tree_blob_count": 8526,
-  "unchanged_inherited_count": 107
+  "successor_branch": "gh-readiness/ci-validator-01",
+  "superseded_workflows": [
+    ".github/workflows/oa01-linux-python312.yml",
+    ".github/workflows/oa01-windows-python312.yml"
+  ],
+  "triadicgate_workflow_retirement_reason": "RETIRED_INAPPLICABLE_UPSTREAM_INTEGRATION_WORKFLOW",
+  "unchanged_inherited_count": 105
 }
