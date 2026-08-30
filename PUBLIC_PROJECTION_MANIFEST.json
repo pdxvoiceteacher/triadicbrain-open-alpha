@@ -1,11 +1,11 @@
 {
-  "active_source_file_count": 148,
+  "active_source_file_count": 149,
   "active_workflows": [
     ".github/workflows/private-alpha-ci.yml"
   ],
   "additional_inherited_count": 14,
   "authority_effect": "NONE",
-  "candidate_label": "v0.1.0-alpha.0-private.2-rc1",
+  "candidate_label": "v0.1.0-alpha.0-private.2-rc2",
   "excluded_active_count": 8418,
   "excluded_retired_count": 1,
   "excluded_source_count": 8419,
@@ -40,9 +40,9 @@
     "tree": "ac52f7b0eb6972327cd71cab4113e2ba6b29ccb2"
   },
   "reviewed_baseline_tag": "v0.1.0-alpha.0-private.1",
-  "rights_active_count": 148,
+  "rights_active_count": 149,
   "rights_clear_count": 0,
-  "rights_hold_count": 149,
+  "rights_hold_count": 150,
   "rights_retired_count": 1,
   "rights_status": "HOLD",
   "schema": "uvlm.gh01.public_projection_manifest.v1",

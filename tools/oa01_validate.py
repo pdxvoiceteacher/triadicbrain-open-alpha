@@ -25,7 +25,7 @@ REPOSITORY_MODES = {"local-source-candidate", "private-github"}
 RECORD_STATUSES = {"ACTIVE", "RETIRED"}
 EXPECTED_PRIVATE_ORIGIN = "pdxvoiceteacher/triadicbrain-open-alpha"
 EXPECTED_SUCCESSOR_BRANCH = "gh-readiness/ci-validator-01"
-EXPECTED_CANDIDATE_LABEL = "v0.1.0-alpha.0-private.2-rc1"
+EXPECTED_CANDIDATE_LABEL = "v0.1.0-alpha.0-private.2-rc2"
 EXPECTED_BASELINE_TAG = "v0.1.0-alpha.0-private.1"
 EXPECTED_BASELINE = {
     "commit": "e2900baeba3bbc8cfd11bc9544f2ed48068b6b5c",
@@ -38,16 +38,16 @@ EXPECTED_SUPERSEDED_WORKFLOWS = [
     ".github/workflows/oa01-windows-python312.yml",
 ]
 EXPECTED_MANIFEST_COUNTS = {
-    "active_source_file_count": 148,
+    "active_source_file_count": 149,
     "retired_source_file_count": 1,
     "lineage_active_count": 107,
     "lineage_retired_count": 1,
     "excluded_active_count": 8418,
     "excluded_retired_count": 1,
     "excluded_source_count": 8419,
-    "rights_active_count": 148,
+    "rights_active_count": 149,
     "rights_retired_count": 1,
-    "rights_hold_count": 149,
+    "rights_hold_count": 150,
     "rights_clear_count": 0,
 }
 PRIVACY_METADATA_SOURCES = {
