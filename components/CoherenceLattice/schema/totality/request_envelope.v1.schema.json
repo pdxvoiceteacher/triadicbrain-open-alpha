@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "uvlm.coherence.totality.request_envelope.v1",
+  "x-uvlm-contract-layering": {
+    "json_schema_role": "structural_validation",
+    "required_semantic_validator": "coherence.totality.request.validate_request_envelope",
+    "semantic_rules_not_expressible_portably_in_draft_2020_12": [
+      "Unicode NFC normalization",
+      "default-ignorable and control-code rejection",
+      "recursive prohibited prompt/private/positive-authority surfaces"
+    ]
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "request_id", "run_id", "logical_time", "kind", "user_input", "grounding", "task_consent", "retention_requested", "model", "divergence_mode", "meta"],
+  "properties": {
+    "schema_id": {"const": "uvlm.coherence.totality.request_envelope.v1"},
+    "request_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "logical_time": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "[^\\s]"},
+    "kind": {"enum": ["plain_text", "grounded_text", "document_qa", "batch"]},
+    "user_input": {"type": "string", "minLength": 1, "maxLength": 100000, "pattern": "[^\\s]"},
+    "grounding": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_kind"],
+        "properties": {
+          "source_kind": {"enum": ["inline_text", "file_text", "atlas_prior", "fixture", "grounding_bundle"]},
+          "label": {"type": ["string", "null"], "minLength": 1, "maxLength": 20000, "pattern": "[^\\s]"},
+          "uri": {"type": ["string", "null"], "minLength": 1, "maxLength": 20000, "pattern": "[^\\s]"},
+          "media_type": {"type": ["string", "null"], "minLength": 1, "maxLength": 20000, "pattern": "[^\\s]"},
+          "text": {"type": ["string", "null"], "minLength": 1, "maxLength": 20000, "pattern": "[^\\s]"},
+          "source_id": {"type": ["string", "null"], "minLength": 1, "maxLength": 20000, "pattern": "[^\\s]"},
+          "bundle_manifest_path": {"type": ["string", "null"], "minLength": 1, "maxLength": 20000, "pattern": "[^\\s]"},
+          "bundle_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+          "normalized_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+          "source_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+          "metadata": {"type": "object"}
+        },
+        "allOf": [
+          {"if": {"properties": {"source_kind": {"const": "grounding_bundle"}}}, "then": {"required": ["source_id", "media_type", "bundle_manifest_path", "bundle_manifest_sha256", "normalized_sha256", "source_sha256"], "properties": {"source_id": {"type": "string", "pattern": "^SRC-[0-9a-f]{20}$"}, "media_type": {"enum": ["text/plain", "text/markdown"]}, "bundle_manifest_path": {"type": "string", "minLength": 1, "maxLength": 20000}, "bundle_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "normalized_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "text": {"type": "null"}}}},
+          {"if": {"properties": {"source_kind": {"const": "inline_text"}}}, "then": {"required": ["text"], "properties": {"text": {"type": "string", "minLength": 1, "maxLength": 20000, "pattern": "[^\\s]"}}}}
+        ]
+      }
+    },
+    "task_consent": {"type": "boolean"},
+    "retention_requested": {"type": "boolean"},
+    "model": {"type": ["string", "null"], "minLength": 1, "maxLength": 256, "pattern": "[^\\s]"},
+    "divergence_mode": {"type": ["string", "null"], "minLength": 1, "maxLength": 256, "pattern": "[^\\s]"},
+    "meta": {"type": "object"}
+  },
+  "allOf": [
+    {"if": {"properties": {"kind": {"const": "plain_text"}}}, "then": {"properties": {"grounding": {"maxItems": 0}}}},
+    {"if": {"properties": {"kind": {"enum": ["grounded_text", "document_qa"]}}}, "then": {"properties": {"grounding": {"minItems": 1}}}}
+  ]
+}

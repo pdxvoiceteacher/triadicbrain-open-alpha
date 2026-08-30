@@ -1,0 +1,218 @@
+{
+  "aha_mode": "structural",
+  "authority_effect": "NONE",
+  "captured_adapter": {
+    "claims": [
+      "The Delta requires total completion to combine a useful operational local product loop with an explicit disposition for every coherent year-long architectural organ.",
+      "The normal local loop carries a source and task through Sonya, CoherenceLattice, Sophia, Atlas and human review, and ends with a receipt and replay.",
+      "The seven permitted organ dispositions distinguish active, disabled, dormant, experimental, deferred, superseded, and rejected work; dormant capability must not be represented as active.",
+      "The Delta says federation is represented by policy, schemas, fixtures, dashboards, and stress corpora, but is not a completed live federated network.",
+      "PMR stores governed provenance only after separate authorization, and federation is blocked by default.",
+      "Atlas may not admit memory automatically, canonize, publish or deploy automatically, turn similarity into truth, or hide lineage or minority readings.",
+      "Optional governed dictionaries and research plugins remain optional, and the core engine must work when all are absent.",
+      "The Delta alone does not prove exact current repository implementation status for every organ; exact-current receipts and reconciliation are still required.",
+      "This Delta establishes that every listed organ is implemented and active in the current repository."
+    ],
+    "claim_evidence_references": [
+      [
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "0f1bdbf0f0511585038fe9975f0895808b71d5a8a9601bec34f9427ec7306a91",
+          "exact_excerpt_sha256": "800e95d07ef6cc3c2bc097cfa15ec111c835ec6d235ee093dc7cb3b52add743e",
+          "segment_id": "SEG-0148",
+          "segment_sha256": "800e95d07ef6cc3c2bc097cfa15ec111c835ec6d235ee093dc7cb3b52add743e",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 16814, "byte_start": 16075, "char_end": 16776, "char_start": 16037}
+        }
+      ],
+      [
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "33cdc40090dbaf052db192a5a963fa445ef566a6808dd01d06ec31bdf86f0476",
+          "exact_excerpt_sha256": "b89939466becde98cd9e71610de5a58b6f0707aeb1c448643b519c594dc95fdb",
+          "segment_id": "SEG-0014",
+          "segment_sha256": "b89939466becde98cd9e71610de5a58b6f0707aeb1c448643b519c594dc95fdb",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 1155, "byte_start": 1040, "char_end": 1137, "char_start": 1032}
+        }
+      ],
+      [
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "d4a6da7322db9243826da78b2a6a3999e9efc3735d604a7762885c8aa46bb055",
+          "exact_excerpt_sha256": "5940b160f59c5a314c48147795f1c46a16189376693b7f447f557ced807c6cd5",
+          "segment_id": "SEG-0017",
+          "segment_sha256": "5940b160f59c5a314c48147795f1c46a16189376693b7f447f557ced807c6cd5",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 1329, "byte_start": 1245, "char_end": 1309, "char_start": 1225}
+        },
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "d4a6da7322db9243826da78b2a6a3999e9efc3735d604a7762885c8aa46bb055",
+          "exact_excerpt_sha256": "69e83588465bbc3b6b674b7b3cd0d7dcbd9b0dd65dfda1836d4879bb3e8d2117",
+          "segment_id": "SEG-0018",
+          "segment_sha256": "69e83588465bbc3b6b674b7b3cd0d7dcbd9b0dd65dfda1836d4879bb3e8d2117",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 1506, "byte_start": 1331, "char_end": 1486, "char_start": 1311}
+        },
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "d4a6da7322db9243826da78b2a6a3999e9efc3735d604a7762885c8aa46bb055",
+          "exact_excerpt_sha256": "ebb86a2f4606951571a971a79a253acab3e5c3b4b7e0027ef7483e46f4145f5f",
+          "segment_id": "SEG-0019",
+          "segment_sha256": "ebb86a2f4606951571a971a79a253acab3e5c3b4b7e0027ef7483e46f4145f5f",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 1629, "byte_start": 1508, "char_end": 1609, "char_start": 1488}
+        }
+      ],
+      [
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "9373cee782db479c85d9db2eeb25714937ff11ed339da05cb54c1d76559bc0e4",
+          "exact_excerpt_sha256": "914d54d9eb2d4053b04627bdab07e81b5ba960602b9e99fa1daf87dd91d2a614",
+          "segment_id": "SEG-0113",
+          "segment_sha256": "914d54d9eb2d4053b04627bdab07e81b5ba960602b9e99fa1daf87dd91d2a614",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 11660, "byte_start": 11482, "char_end": 11622, "char_start": 11444}
+        }
+      ],
+      [
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "d9485693061d54bd88fd3a2e8ac161fdd00a7ade262e2f0e0944c4c204dda916",
+          "exact_excerpt_sha256": "9c72b1b0f3400de94b9218943c2dfb91b40fa862e12f67e612db43ca968adb21",
+          "segment_id": "SEG-0076",
+          "segment_sha256": "9c72b1b0f3400de94b9218943c2dfb91b40fa862e12f67e612db43ca968adb21",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 7630, "byte_start": 7464, "char_end": 7610, "char_start": 7444}
+        },
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "d9485693061d54bd88fd3a2e8ac161fdd00a7ade262e2f0e0944c4c204dda916",
+          "exact_excerpt_sha256": "4913a62ef790b30a31627bbfd70cd89bd1bb844fff15e875d46b3ed4b1b1b195",
+          "segment_id": "SEG-0079",
+          "segment_sha256": "4913a62ef790b30a31627bbfd70cd89bd1bb844fff15e875d46b3ed4b1b1b195",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 8002, "byte_start": 7882, "char_end": 7982, "char_start": 7862}
+        }
+      ],
+      [
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "85acff9ea08abf3bf19b8d3dfaa66a6d7ddc97357145063c48e1c15302e89c53",
+          "exact_excerpt_sha256": "aeb00f6af536203f6a5e4ffba480e50f6dc449da7fa5265b188d1d47332fb0b4",
+          "segment_id": "SEG-0068",
+          "segment_sha256": "aeb00f6af536203f6a5e4ffba480e50f6dc449da7fa5265b188d1d47332fb0b4",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 7071, "byte_start": 6909, "char_end": 7051, "char_start": 6889}
+        }
+      ],
+      [
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "a7faab38b3831a17c7c312b72ca14623f853a662152a92aa5b6e5254b4fcb20b",
+          "exact_excerpt_sha256": "807e4a6f755fdf22d6520cbdc25fb3d80e647c0b2270640bffb84ef11bd8314f",
+          "segment_id": "SEG-0124",
+          "segment_sha256": "807e4a6f755fdf22d6520cbdc25fb3d80e647c0b2270640bffb84ef11bd8314f",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 12461, "byte_start": 12381, "char_end": 12423, "char_start": 12343}
+        },
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "a7faab38b3831a17c7c312b72ca14623f853a662152a92aa5b6e5254b4fcb20b",
+          "exact_excerpt_sha256": "46dfd58d53acd5f70220200fde3a2fc57afd35f8592937a5595c6f087a93c06b",
+          "segment_id": "SEG-0125",
+          "segment_sha256": "46dfd58d53acd5f70220200fde3a2fc57afd35f8592937a5595c6f087a93c06b",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 12732, "byte_start": 12463, "char_end": 12694, "char_start": 12425}
+        },
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "a7faab38b3831a17c7c312b72ca14623f853a662152a92aa5b6e5254b4fcb20b",
+          "exact_excerpt_sha256": "660b7abc01022f50ec85a8194bf14ae60a7cb1e9361f2a0329efa06dac901417",
+          "segment_id": "SEG-0126",
+          "segment_sha256": "660b7abc01022f50ec85a8194bf14ae60a7cb1e9361f2a0329efa06dac901417",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 12780, "byte_start": 12734, "char_end": 12742, "char_start": 12696}
+        }
+      ],
+      [
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "b58fda572a1f5d877986da25ab1eb126cd1f283a021182fb18c74a217a1b7bc5",
+          "exact_excerpt_sha256": "b9af484d7e32db158b25f6cc78ad9e43b8a8f9fcbd6fe79478871b21dfe782a0",
+          "segment_id": "SEG-0128",
+          "segment_sha256": "b9af484d7e32db158b25f6cc78ad9e43b8a8f9fcbd6fe79478871b21dfe782a0",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 12883, "byte_start": 12826, "char_end": 12845, "char_start": 12788}
+        },
+        {
+          "candidate_relation": "SUPPORTS",
+          "claim_text_sha256": "b58fda572a1f5d877986da25ab1eb126cd1f283a021182fb18c74a217a1b7bc5",
+          "exact_excerpt_sha256": "800e95d07ef6cc3c2bc097cfa15ec111c835ec6d235ee093dc7cb3b52add743e",
+          "segment_id": "SEG-0148",
+          "segment_sha256": "800e95d07ef6cc3c2bc097cfa15ec111c835ec6d235ee093dc7cb3b52add743e",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 16814, "byte_start": 16075, "char_end": 16776, "char_start": 16037}
+        },
+        {
+          "candidate_relation": "LIMITS",
+          "claim_text_sha256": "b58fda572a1f5d877986da25ab1eb126cd1f283a021182fb18c74a217a1b7bc5",
+          "exact_excerpt_sha256": "084057c33870e10af2ecb58eb7244134c213c3a620fa9999f9bea994c1c86c7f",
+          "segment_id": "SEG-0132",
+          "segment_sha256": "084057c33870e10af2ecb58eb7244134c213c3a620fa9999f9bea994c1c86c7f",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 13903, "byte_start": 13764, "char_end": 13865, "char_start": 13726}
+        }
+      ],
+      [
+        {
+          "candidate_relation": "CONTRADICTS",
+          "claim_text_sha256": "7d258d343007ae984e58bac5db88b149f3859b8c22c7c98a8d49578464866ebb",
+          "exact_excerpt_sha256": "914d54d9eb2d4053b04627bdab07e81b5ba960602b9e99fa1daf87dd91d2a614",
+          "segment_id": "SEG-0113",
+          "segment_sha256": "914d54d9eb2d4053b04627bdab07e81b5ba960602b9e99fa1daf87dd91d2a614",
+          "source_sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+          "source_span": {"byte_end": 11660, "byte_start": 11482, "char_end": 11622, "char_start": 11444}
+        }
+      ]
+    ],
+    "provider_invoked": false,
+    "uncertainty": 0.38
+  },
+  "logical_time": "T+PRODUCT-TASK-01",
+  "nonauthority": "This deterministic captured-adapter task is a private usability and governance fixture. It grants no truth, memory, training, merge, publication, deployment, release, or canonization authority.",
+  "privacy": {
+    "basis": "commission_authorizes_local_captured_adapter_processing_without_external_egress",
+    "policy_satisfied": true,
+    "task_consent": true
+  },
+  "request_id": "REQ-TOTALITY-PRODUCT-01",
+  "run_id": "RUN-TOTALITY-PRODUCT-01",
+  "schema_id": "uvlm.triadic.totality.substantive_task_profile.v1",
+  "source": {
+    "media_type": "text/markdown",
+    "relative_path": "validation/triadic_brain_totality_repair_inputs_v1/UVLM_Triadic_Brain_Year_Long_Architecture_Canon_Reconciliation_Delta_v1.0.0.md",
+    "sha256": "e00d009c9384bbbda3ca5f1f8a66edc8be13fce4c802dc92771ced67debe0efc",
+    "source_label": "UVLM Triadic Brain Year-Long Architecture Canon Reconciliation Delta v1.0.0"
+  },
+  "task_id": "PRODUCT_TASK_01",
+  "unsupported_claim_answer_key": {
+    "adjudication_basis": "exact_authenticated_delta_text_only",
+    "adjudication_is_human_decision": false,
+    "claims": [
+      {"claim_id": "CLM-0001", "expected_support": "SOURCE_SUPPORTED"},
+      {"claim_id": "CLM-0002", "expected_support": "SOURCE_SUPPORTED"},
+      {"claim_id": "CLM-0003", "expected_support": "SOURCE_SUPPORTED"},
+      {"claim_id": "CLM-0004", "expected_support": "SOURCE_SUPPORTED"},
+      {"claim_id": "CLM-0005", "expected_support": "SOURCE_SUPPORTED"},
+      {"claim_id": "CLM-0006", "expected_support": "SOURCE_SUPPORTED"},
+      {"claim_id": "CLM-0007", "expected_support": "SOURCE_SUPPORTED"},
+      {"claim_id": "CLM-0008", "expected_support": "SOURCE_SUPPORTED_WITH_LIMITATION"},
+      {"claim_id": "CLM-0009", "expected_support": "UNSUPPORTED_AND_CONTRADICTED"}
+    ],
+    "human_adjudication_required_for_final_rating": true,
+    "schema_id": "uvlm.triadic.totality.unsupported_claim_answer_key.v1"
+  },
+  "user_input": "Using only the authenticated Year-Long Canon Delta, explain what total completion requires, the normal local product loop, the seven organ dispositions, and the current boundaries for federation, PMR, Atlas, and optional plugins. State the manuscript's limitation as evidence of exact current implementation status, and identify any claim in the captured answer that the manuscript does not support."
+}

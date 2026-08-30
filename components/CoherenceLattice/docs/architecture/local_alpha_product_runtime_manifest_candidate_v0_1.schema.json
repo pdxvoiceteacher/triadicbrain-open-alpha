@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "uvlm.local_alpha_product_runtime_manifest_candidate.schema.v0_1",
+  "type": "object",
+  "required": [
+    "schema",
+    "manifest_id",
+    "manifest_version",
+    "phase",
+    "source_registry",
+    "source_quickstart",
+    "source_demo_bundle",
+    "runtime_product_slice",
+    "included_runtime_paths",
+    "included_docs",
+    "included_contracts",
+    "excluded_surfaces",
+    "provenance_pointers",
+    "authority",
+    "nonclaims",
+    "generation_policy"
+  ],
+  "properties": {
+    "schema": {
+      "const": "uvlm.local_alpha_product_runtime_manifest_candidate.v0_1"
+    },
+    "manifest_id": {
+      "const": "LOCAL-ALPHA-PRODUCT-RUNTIME-MANIFEST-CANDIDATE-00"
+    },
+    "phase": {
+      "const": "LOCAL-ALPHA-REPO-HOUSEKEEPING-PRODUCT-MANIFEST-PREFLIGHT-14"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "uvlm.pmr.totality.consent.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "consent_id", "run_id", "candidate_id", "logical_time", "decision", "scope", "quota_bytes", "expires_logical_time", "training_allowed", "federation_allowed", "authority_effect"],
+  "properties": {
+    "schema_id": {"const": "uvlm.pmr.totality.consent.v1"},
+    "consent_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "candidate_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "logical_time": {"type": "string", "minLength": 1, "maxLength": 128},
+    "decision": {"enum": ["GRANT", "DENY"]},
+    "scope": {"const": "PROVENANCE_REFERENCE_ONLY"},
+    "quota_bytes": {"type": "integer", "minimum": 1, "maximum": 100000000},
+    "expires_logical_time": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 128,
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]{1,9})?Z$"
+        }
+      ]
+    },
+    "training_allowed": {"const": false},
+    "federation_allowed": {"const": false},
+    "authority_effect": {"const": "NONE"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"expires_logical_time": {"type": "string"}}, "required": ["expires_logical_time"]},
+      "then": {
+        "properties": {
+          "logical_time": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 128,
+            "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]{1,9})?Z$"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "uvlm.coherence.totality.tel_event.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "sequence", "logical_time", "event_type", "run_id", "candidate_id", "audit_id", "decision_id", "outcome", "payload", "authority_effect"],
+  "properties": {
+    "schema_id": {"const": "uvlm.coherence.totality.tel_event.v1"},
+    "sequence": {"type": "integer", "minimum": 1},
+    "logical_time": {"type": "string", "pattern": "^T\\+[0-9]{6}$"},
+    "event_type": {"enum": ["REQUEST_CANONICALIZED", "GROUNDING_VERIFIED", "RAW_OUTPUT_QUARANTINED", "CANDIDATE_CANONICALIZED", "CLAIM_EVIDENCE_MAPPED", "UCM_PROJECTED", "AHA_EVALUATED", "COUNTEREXAMPLES_SCANNED", "REFERENCE_WAVEFORM_ENCODED", "APERTURE_DECIDED", "PMR_BOUNDARY_RECORDED", "SOPHIA_AUDIT_REQUESTED", "ATLAS_ORIENTATION_PENDING", "HUMAN_DECISION_PENDING", "CORE_BUILD_COMPLETED", "SOPHIA_AUDIT_COMPLETED", "ATLAS_ORIENTATION_COMPLETED", "ROUTE_COMPLETED_HUMAN_PENDING", "HUMAN_DECISION_RECORDED", "STAGE_FAILED"]},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "candidate_id": {"type": ["string", "null"], "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "audit_id": {"type": ["string", "null"], "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "decision_id": {"type": ["string", "null"], "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "outcome": {"enum": ["SUCCESS", "HOLD", "REFUSE", "FAILURE", "RECORDED"]},
+    "payload": {"type": "object"},
+    "authority_effect": {"const": "NONE"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"event_type": {"const": "HUMAN_DECISION_RECORDED"}}, "required": ["event_type"]},
+      "then": {
+        "properties": {
+          "candidate_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+          "audit_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+          "decision_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+          "outcome": {"const": "RECORDED"},
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["decision_receipt_sha256", "disposition", "external_receipt_path", "parent_sealed_tel_sha256"],
+            "properties": {
+              "decision_receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "disposition": {"enum": ["APPROVE", "HOLD", "REJECT", "REPAIR"]},
+              "external_receipt_path": {"type": "string", "minLength": 1, "maxLength": 1000, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$"},
+              "parent_sealed_tel_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+            }
+          }
+        }
+      }
+    }
+  ]
+}

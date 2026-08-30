@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "uvlm.sonya.totality.quarantine_verification_receipt.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "run_id", "logical_time", "request_sha256", "adapter_id", "quarantine_member", "raw_output_sha256", "raw_output_bytes", "quarantine_receipt_sha256", "candidate_id", "candidate_sha256", "verification", "raw_output_disclosed", "effects", "authority_effect"],
+  "properties": {
+    "schema_id": {"const": "uvlm.sonya.totality.quarantine_verification_receipt.v1"},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "logical_time": {"type": "string", "minLength": 1, "maxLength": 128},
+    "request_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "adapter_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "quarantine_member": {"type": "string", "minLength": 1, "maxLength": 255},
+    "raw_output_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "raw_output_bytes": {"type": "integer", "minimum": 1},
+    "quarantine_receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "candidate_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "candidate_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path_binding_valid", "exact_byte_count_valid", "exact_sha256_valid", "strict_utf8_json_valid", "semantic_capture_schema_valid", "candidate_binding_valid"],
+      "properties": {
+        "path_binding_valid": {"const": true},
+        "exact_byte_count_valid": {"const": true},
+        "exact_sha256_valid": {"const": true},
+        "strict_utf8_json_valid": {"const": true},
+        "semantic_capture_schema_valid": {"const": true},
+        "candidate_binding_valid": {"const": true}
+      }
+    },
+    "raw_output_disclosed": {"const": false},
+    "effects": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["network", "provider_invocation", "memory_write", "training", "publication", "deployment", "release"],
+      "properties": {
+        "network": {"const": false},
+        "provider_invocation": {"const": false},
+        "memory_write": {"const": false},
+        "training": {"const": false},
+        "publication": {"const": false},
+        "deployment": {"const": false},
+        "release": {"const": false}
+      }
+    },
+    "authority_effect": {"const": "NONE"}
+  }
+}

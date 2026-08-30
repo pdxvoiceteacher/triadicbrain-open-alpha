@@ -1,0 +1,72 @@
+{
+  "authority_effect": "NONE",
+  "comparison": {
+    "governance_reduced_burden": null,
+    "governed_faster": null,
+    "governed_less_burdensome": null,
+    "governed_more_accurate": null,
+    "governed_more_understandable": null,
+    "governed_more_useful": null,
+    "negative_result_preserved": null
+  },
+  "evaluation_rule": {
+    "accuracy_basis": "combined_unsupported_and_limitation_false_positive_plus_false_negative_count",
+    "comparison_fields_are_machine_derived_after_both_human_lanes_lock": true,
+    "governance_reduced_burden_requires": {
+      "cognitive_load_1_to_7": "governed_strictly_lower",
+      "completion_seconds": "governed_less_than_or_equal",
+      "identification_error_count": "governed_less_than_or_equal",
+      "understandability_1_to_7": "governed_greater_than_or_equal",
+      "usefulness_1_to_7": "governed_greater_than_or_equal"
+    },
+    "negative_result_must_be_preserved": true,
+    "ratings_and_detected_claim_ids_are_human_supplied_only": true
+  },
+  "governed_lane": {
+    "cognitive_load_1_to_7": null,
+    "completion_seconds": null,
+    "detected_limitation_claim_ids": null,
+    "detected_unsupported_claim_ids": null,
+    "ended_at": null,
+    "notes": null,
+    "selected_decision": null,
+    "started_at": null,
+    "understandability_1_to_7": null,
+    "usefulness_1_to_7": null
+  },
+  "human_comparison_is_not_atlas_final_decision": true,
+  "human_fields_complete": false,
+  "human_review_status": "NOT_STARTED",
+  "machine_bindings": {
+    "answer_key_sha256": null,
+    "comparator_template_sha256": null,
+    "governed_claim_map_sha256": null,
+    "governed_review_html_sha256": null,
+    "profile_sha256": null,
+    "raw_candidate_html_sha256": null,
+    "raw_candidate_sha256": null,
+    "raw_lane_manifest_sha256": null,
+    "replay_receipt_sha256": null,
+    "route_receipt_sha256": null,
+    "sealed_run_manifest_sha256": null,
+    "task_id": "PRODUCT_TASK_01"
+  },
+  "machine_scoring": null,
+  "nonauthority": "This unsubmitted template records no human evidence and grants no truth, memory, training, merge, publication, deployment, release, or canonization authority.",
+  "raw_lane": {
+    "cognitive_load_1_to_7": null,
+    "completion_seconds": null,
+    "detected_limitation_claim_ids": null,
+    "detected_unsupported_claim_ids": null,
+    "ended_at": null,
+    "notes": null,
+    "selected_decision": null,
+    "started_at": null,
+    "understandability_1_to_7": null,
+    "usefulness_1_to_7": null
+  },
+  "reviewer_display_name": null,
+  "schema_id": "uvlm.triadic.totality.usability_comparator.v2",
+  "submitted_by_human": false,
+  "submitted_receipt": null
+}

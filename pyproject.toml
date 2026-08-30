@@ -1,0 +1,28 @@
+[build-system]
+requires = []
+build-backend = "_triadicbrain_build_backend"
+backend-path = ["."]
+
+[project]
+name = "triadicbrain"
+version = "0.1.0a0.dev1"
+description = "Private, offline alpha-staging facade for bounded Triadic Brain review"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
+]
+
+[project.scripts]
+triadicbrain = "triadicbrain.cli:main"
+
+[tool.triadicbrain]
+authority-effect = "NONE"
+public-release-eligible = false
+rights-status = "HOLD"
+provider-policy = "DENY"
+network-policy = "LOOPBACK_SERVE_ONLY"

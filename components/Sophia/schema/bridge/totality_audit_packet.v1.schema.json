@@ -1,0 +1,202 @@
+{
+  "$id": "https://ultraverbaluxmentis.org/schemas/uvlm.sophia.totality.audit_packet.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "audit_id": {"pattern": "^AUDIT-[0-9a-f]{24}$", "type": "string"},
+    "authority_boundary_status": {"enum": ["BOUNDED", "REJECTED"]},
+    "candidate_id": {"type": ["string", "null"]},
+    "claim_findings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "claim_id": {"minLength": 1, "type": "string"},
+          "evidence_count": {"minimum": 0, "type": "integer"},
+          "recomputed_supported": {"type": "boolean"},
+          "residual_tokens": {"items": {"type": "string"}, "type": "array"},
+          "stored_support_status": {"enum": ["SUPPORTED", "INSUFFICIENT_EVIDENCE"]}
+        },
+        "required": ["claim_id", "stored_support_status", "evidence_count", "recomputed_supported", "residual_tokens"],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "disposition": {"enum": ["PASS", "HOLD", "REJECT"]},
+    "findings": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact": {"minLength": 1, "type": "string"},
+          "code": {"pattern": "^[A-Z0-9_]+$", "type": "string"},
+          "detail": {"minLength": 1, "type": "string"},
+          "severity": {"enum": ["HOLD", "REJECT"]}
+        },
+        "required": ["code", "severity", "artifact", "detail"],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "input_digests": {
+      "additionalProperties": false,
+      "properties": {
+        "aha_result.json": {"$ref": "#/$defs/digestRecord"},
+        "aperture_decision.json": {"$ref": "#/$defs/digestRecord"},
+        "candidate_packet.json": {"$ref": "#/$defs/digestRecord"},
+        "claim_evidence_map.json": {"$ref": "#/$defs/digestRecord"},
+        "counterexamples.json": {"$ref": "#/$defs/digestRecord"},
+        "grounding/manifest.json": {"$ref": "#/$defs/digestRecord"},
+        "grounding/normalized_source.txt": {"$ref": "#/$defs/digestRecord"},
+        "grounding/segments.jsonl": {"$ref": "#/$defs/digestRecord"},
+        "grounding/source.bin": {"$ref": "#/$defs/digestRecord"},
+        "pmr_consent.json": {"$ref": "#/$defs/digestRecord"},
+        "pmr_receipt.json": {"$ref": "#/$defs/digestRecord"},
+        "projector_receipt.json": {"$ref": "#/$defs/digestRecord"},
+        "reference_waveform.json": {"$ref": "#/$defs/digestRecord"},
+        "request.json": {"$ref": "#/$defs/digestRecord"},
+        "residual_refusal.json": {"$ref": "#/$defs/digestRecord"},
+        "sonya/quarantine_receipt.json": {"$ref": "#/$defs/digestRecord"},
+        "sonya/quarantine_verification_receipt.json": {"$ref": "#/$defs/digestRecord"},
+        "tel_audit_prefix.jsonl": {"$ref": "#/$defs/digestRecord"},
+        "ucm_state.json": {"$ref": "#/$defs/digestRecord"}
+      },
+      "required": [
+        "request.json", "grounding/manifest.json", "grounding/source.bin",
+        "grounding/normalized_source.txt", "grounding/segments.jsonl", "sonya/quarantine_receipt.json", "sonya/quarantine_verification_receipt.json", "candidate_packet.json",
+        "claim_evidence_map.json", "ucm_state.json", "projector_receipt.json",
+        "residual_refusal.json", "aha_result.json", "counterexamples.json", "reference_waveform.json",
+        "pmr_consent.json", "pmr_receipt.json", "aperture_decision.json", "tel_audit_prefix.jsonl"
+      ],
+      "type": "object"
+    },
+    "logical_time": {"type": ["string", "null"]},
+    "nonauthority": {
+      "additionalProperties": false,
+      "properties": {
+        "canonization": {"const": false},
+        "deployment": {"const": false},
+        "final_answer_authority": {"const": false},
+        "human_decision": {"const": false},
+        "memory_write_authority": {"const": false},
+        "publication": {"const": false},
+        "release": {"const": false},
+        "training_authority": {"const": false},
+        "truth_certification": {"const": false}
+      },
+      "required": ["truth_certification", "final_answer_authority", "memory_write_authority", "training_authority", "canonization", "publication", "deployment", "release", "human_decision"],
+      "type": "object"
+    },
+    "packet_type": {"const": "sophia_totality_audit_packet"},
+    "parent_list": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_type": {"minLength": 1, "type": "string"},
+          "canonical_sha256": {"$ref": "#/$defs/nullableSha256"},
+          "file_sha256": {"$ref": "#/$defs/nullableSha256"},
+          "path": {"minLength": 1, "type": "string"}
+        },
+        "required": ["artifact_type", "path", "file_sha256", "canonical_sha256"],
+        "type": "object"
+      },
+      "maxItems": 19,
+      "minItems": 19,
+      "type": "array"
+    },
+    "permitted_next_route": {"enum": ["atlas_posture_only", "atlas_rejection_explanation_only"]},
+    "producer": {
+      "additionalProperties": false,
+      "properties": {
+        "repository": {"const": "pdxvoiceteacher/Sophia"},
+        "role": {"const": "independent_totality_auditor"},
+        "version": {"const": "1.0"}
+      },
+      "required": ["repository", "role", "version"],
+      "type": "object"
+    },
+    "producer_repository": {"const": "pdxvoiceteacher/Sophia"},
+    "reason_codes": {"items": {"pattern": "^[A-Z0-9_]+$", "type": "string"}, "minItems": 1, "type": "array", "uniqueItems": true},
+    "return_route": {
+      "additionalProperties": false,
+      "properties": {
+        "route": {"enum": ["NONE", "CLARIFY", "REPAIR"]},
+        "destination": {"enum": ["NONE", "COHERENCELATTICE", "SONYA_OR_COHERENCELATTICE"]},
+        "status": {"enum": ["NOT_REQUIRED", "REQUESTED_NOT_EXECUTED"]},
+        "reason_codes": {"items": {"pattern": "^[A-Z0-9_]+$", "type": "string"}, "type": "array", "uniqueItems": true},
+        "candidate_mutation_performed": {"const": false},
+        "source_mutation_performed": {"const": false},
+        "automatic_rerun_performed": {"const": false},
+        "authority_effect": {"const": "NONE"}
+      },
+      "required": ["route", "destination", "status", "reason_codes", "candidate_mutation_performed", "source_mutation_performed", "automatic_rerun_performed", "authority_effect"],
+      "type": "object"
+    },
+    "recomputed_checks": {
+      "additionalProperties": false,
+      "properties": {
+        "aha_status": {"enum": ["AVAILABLE", "UNAVAILABLE", null]},
+        "aperture_decision": {"enum": ["PASS_SCREEN", "HOLD", "REFUSE", null]},
+        "candidate_request_and_span_binding": {"type": "boolean"},
+        "claim_evidence_exact_recomputation": {"type": "boolean"},
+        "coherence_reperformed_exact_byte_proof_recorded": {"type": "boolean"},
+        "counterexamples_unresolved": {"minimum": 0, "type": ["integer", "null"]},
+        "full_posterior_and_equivalence_recomputation": {"type": "boolean"},
+        "grounding_identity_and_adequacy": {"type": "boolean"},
+        "pmr_retention_gate_satisfied": {"type": "boolean"},
+        "quarantine_receipt_binding": {"type": "boolean"},
+        "quarantine_verification_binding": {"type": "boolean"},
+        "raw_quarantine_bytes_independently_verified": {"const": false},
+        "reference_waveform_recomputed": {"type": "boolean"},
+        "residual_refusal_recomputed": {"type": "boolean"},
+        "tel_chronology_valid": {"type": "boolean"},
+        "tel_event_count": {"minimum": 0, "type": "integer"},
+        "top_k_disposition_invariant": {"type": "boolean"},
+        "ucm_expected_context_binding": {"type": "boolean"}
+      },
+      "required": ["grounding_identity_and_adequacy", "candidate_request_and_span_binding", "quarantine_receipt_binding", "quarantine_verification_binding", "coherence_reperformed_exact_byte_proof_recorded", "raw_quarantine_bytes_independently_verified", "pmr_retention_gate_satisfied", "claim_evidence_exact_recomputation", "ucm_expected_context_binding", "full_posterior_and_equivalence_recomputation", "top_k_disposition_invariant", "residual_refusal_recomputed", "aha_status", "counterexamples_unresolved", "reference_waveform_recomputed", "aperture_decision", "tel_event_count", "tel_chronology_valid"],
+      "type": "object"
+    },
+    "requires_human_review": {"const": true},
+    "run_id": {"type": ["string", "null"]},
+    "schema_id": {"const": "uvlm.sophia.totality.audit_packet.v1"},
+    "schema_version": {"const": "1.0"},
+    "side_effects": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_mutation_performed": {"const": false},
+        "canonization_performed": {"const": false},
+        "deployment_performed": {"const": false},
+        "memory_write_performed": {"const": false},
+        "model_invocation_performed": {"const": false},
+        "network_access_performed": {"const": false},
+        "pmr_write_performed": {"const": false},
+        "publication_performed": {"const": false},
+        "release_performed": {"const": false},
+        "source_mutation_performed": {"const": false},
+        "training_performed": {"const": false}
+      },
+      "required": ["network_access_performed", "model_invocation_performed", "candidate_mutation_performed", "source_mutation_performed", "memory_write_performed", "training_performed", "canonization_performed", "publication_performed", "deployment_performed", "release_performed", "pmr_write_performed"],
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_id", "schema_version", "packet_type", "audit_id", "run_id", "logical_time",
+    "candidate_id", "producer_repository", "producer", "input_digests", "parent_list",
+    "disposition", "reason_codes", "findings", "claim_findings", "recomputed_checks",
+    "authority_boundary_status", "requires_human_review", "permitted_next_route", "return_route",
+    "nonauthority", "side_effects"
+  ],
+  "title": "UVLM Sophia Totality Audit Packet v1",
+  "type": "object",
+  "$defs": {
+    "digestRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "canonical_sha256": {"$ref": "#/$defs/nullableSha256"},
+        "file_sha256": {"$ref": "#/$defs/nullableSha256"}
+      },
+      "required": ["file_sha256", "canonical_sha256"],
+      "type": "object"
+    },
+    "nullableSha256": {"anyOf": [{"pattern": "^[0-9a-f]{64}$", "type": "string"}, {"type": "null"}]}
+  }
+}

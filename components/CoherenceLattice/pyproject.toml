@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coherencelattice"
+version = "0.1.0"
+description = "CoherenceLattice runtime, Sonya Node core, and local Triadic Brain API."
+readme = "README.md"
+requires-python = ">=3.12"
+
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn>=0.30",
+  "pydantic>=2.8",
+  "jsonschema>=4.26",
+  "requests>=2.32",
+  "numpy>=1.24",
+  "python-multipart>=0.0.9,<1",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8",
+  "hypothesis>=6",
+  "httpx>=0.27",
+  "httpx2>=2.9,<3",
+  "pandas>=2",
+  "scikit-learn>=1.4",
+  "networkx>=3",
+]
+
+[tool.setuptools]
+package-dir = {"" = "python/src"}
+
+[tool.setuptools.packages.find]
+where = ["python/src"]
+exclude = ["coherence.atlas", "coherence.atlas.*"]
+
+[tool.setuptools.package-data]
+"coherence.totality" = ["schemas/*.schema.json"]
+
+[project.scripts]
+coherence-api = "coherence.api.server:main"
+sonya-desktop = "coherence.sonya_desktop.app:main"
+coherence-aha = "coherence.aha.cli:main"
+deltasyn-compression-lab = "coherence.deltasyn_compression.cli:main"

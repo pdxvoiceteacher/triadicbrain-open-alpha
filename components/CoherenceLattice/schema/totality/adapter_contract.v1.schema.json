@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "uvlm.sonya.totality.adapter_contract.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "adapter_id", "adapter_kind", "local_or_remote", "capabilities", "input_schema", "output_schema", "network_policy", "raw_output_policy", "candidate_packet_policy", "failure_receipt_policy", "telemetry_policy", "provenance_policy", "consent_policy", "claim_ceiling"],
+  "properties": {
+    "schema_id": {"const": "uvlm.sonya.totality.adapter_contract.v1"},
+    "adapter_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "adapter_kind": {"const": "captured_candidate"},
+    "local_or_remote": {"const": "local"},
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capture_exact_bytes", "cancellation", "provider_invocation", "memory_write", "training"],
+      "properties": {
+        "capture_exact_bytes": {"const": true},
+        "cancellation": {"const": false},
+        "provider_invocation": {"const": false},
+        "memory_write": {"const": false},
+        "training": {"const": false}
+      }
+    },
+    "input_schema": {"const": "opaque_bytes_or_uvlm.sonya.totality.captured_semantic.v1"},
+    "output_schema": {"const": "uvlm.sonya.totality.candidate_packet.v1"},
+    "network_policy": {"const": "DENY"},
+    "raw_output_policy": {"const": "QUARANTINE_EXACT_BYTES"},
+    "candidate_packet_policy": {"const": "NONAUTHORITATIVE_ONLY"},
+    "failure_receipt_policy": {"const": "DETERMINISTIC_REQUIRED"},
+    "telemetry_policy": {"const": "LOCAL_DETERMINISTIC_NO_HIDDEN_TELEMETRY"},
+    "provenance_policy": {"const": "EXACT_HASH_AND_BYTE_COUNT_REQUIRED"},
+    "consent_policy": {"const": "EXPLICIT_TASK_CONSENT_REQUIRED"},
+    "claim_ceiling": {"const": "NONAUTHORITATIVE_CANDIDATE_ONLY"}
+  }
+}

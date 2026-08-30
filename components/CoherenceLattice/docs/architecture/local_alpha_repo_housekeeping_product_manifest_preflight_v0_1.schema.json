@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "uvlm.local_alpha_repo_housekeeping_product_manifest_preflight.schema.v0_1",
+  "type": "object",
+  "required": [
+    "schema",
+    "preflight_id",
+    "preflight_version",
+    "phase",
+    "upstream_phase",
+    "readiness_classification",
+    "problem_statement",
+    "accepted_upstream_evidence",
+    "candidate_surface_classes",
+    "product_runtime_manifest_policy",
+    "provenance_ledger_policy",
+    "validation_harness_manifest_policy",
+    "publication_docs_manifest_policy",
+    "forbidden_actions",
+    "authority",
+    "nonclaims",
+    "next_required_patch"
+  ],
+  "properties": {
+    "schema": {
+      "const": "uvlm.local_alpha_repo_housekeeping_product_manifest_preflight.v0_1"
+    },
+    "preflight_id": {
+      "const": "LOCAL-ALPHA-REPO-HOUSEKEEPING-PRODUCT-MANIFEST-PREFLIGHT-14"
+    },
+    "preflight_version": {
+      "type": "string"
+    },
+    "phase": {
+      "const": "LOCAL-ALPHA-REPO-HOUSEKEEPING-PRODUCT-MANIFEST-PREFLIGHT-14"
+    },
+    "upstream_phase": {
+      "const": "LOCAL-ALPHA-USER-QUICKSTART-13"
+    },
+    "readiness_classification": {
+      "const": "product_manifest_split_preflight_without_repo_split_or_provenance_deletion"
+    },
+    "next_required_patch": {
+      "const": "LOCAL-ALPHA-PRODUCT-MANIFEST-GENERATION-15"
+    }
+  },
+  "additionalProperties": true
+}

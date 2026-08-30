@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "uvlm.coherence.totality.tel_finalization_receipt.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "run_id", "logical_time", "candidate_id", "audit_id", "decision_id", "tel_audit_prefix_sha256", "sophia_audit_packet_sha256", "atlas_posture_packet_sha256", "tel_events_sha256", "event_count", "human_decision", "external_continuation_required", "effects", "authority_effect"],
+  "properties": {
+    "schema_id": {"const": "uvlm.coherence.totality.tel_finalization_receipt.v1"},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "logical_time": {"type": "string", "minLength": 1, "maxLength": 128},
+    "candidate_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "audit_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "decision_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "tel_audit_prefix_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "sophia_audit_packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "atlas_posture_packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "tel_events_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "event_count": {"const": 18},
+    "human_decision": {"const": "PENDING"},
+    "external_continuation_required": {"const": true},
+    "effects": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["network", "provider_invocation", "memory_write", "training", "publication", "deployment", "release"],
+      "properties": {
+        "network": {"const": false},
+        "provider_invocation": {"const": false},
+        "memory_write": {"const": false},
+        "training": {"const": false},
+        "publication": {"const": false},
+        "deployment": {"const": false},
+        "release": {"const": false}
+      }
+    },
+    "authority_effect": {"const": "NONE"}
+  }
+}

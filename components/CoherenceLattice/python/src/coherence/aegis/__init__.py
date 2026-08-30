@@ -1,0 +1,15 @@
+"""Local deterministic AEGIS admission contract utilities."""
+
+from coherence.aegis.action_firewall import evaluate_action_firewall
+from coherence.aegis.admission import build_aegis_admission_contract
+from coherence.aegis.consent_check import evaluate_consent
+from coherence.aegis.grounding_binding import build_grounding_binding_packet
+from coherence.aegis.instruction_quarantine import evaluate_instruction_quarantine
+from coherence.aegis.local_runtime_enforcement_adapter import build_local_runtime_enforcement_failure_receipt, evaluate_local_runtime_preflight
+from coherence.aegis.model_candidate_gate import evaluate_model_candidate_gate
+from coherence.aegis.receipt_chain_export import build_aegis_receipt_chain_export, build_aegis_receipt_chain_export_failure_receipt, sha256_file
+from coherence.aegis.ui_preflight_status_surface import build_preflight_status_surface, build_preflight_status_surface_failure_receipt, render_preflight_status_html, render_preflight_status_markdown, write_preflight_status_surface_artifacts
+from coherence.aegis.source_scope import evaluate_source_scope
+from coherence.aegis.totality_admission import build_totality_admission_packet, validate_totality_admission_packet
+
+__all__ = ['build_preflight_status_surface', 'build_preflight_status_surface_failure_receipt', 'render_preflight_status_html', 'render_preflight_status_markdown', 'write_preflight_status_surface_artifacts', 'build_local_runtime_enforcement_failure_receipt', 'evaluate_local_runtime_preflight', 'build_aegis_receipt_chain_export', 'build_aegis_receipt_chain_export_failure_receipt', 'sha256_file', 'evaluate_action_firewall', 'build_aegis_admission_contract', 'build_grounding_binding_packet', 'evaluate_consent', 'evaluate_instruction_quarantine', 'evaluate_model_candidate_gate', 'evaluate_source_scope', 'build_totality_admission_packet', 'validate_totality_admission_packet']
