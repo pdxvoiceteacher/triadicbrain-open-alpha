@@ -1,4 +1,4 @@
-"""Run the bounded, provider-free GH-01 private-alpha CI contract.
+"""Run the bounded, provider-free RL-02 Repair01 private-alpha CI contract.
 
 All durable output is written beneath a fresh evidence root outside the source
 checkout.  Build/install scratch state is also external and is removed before
@@ -23,6 +23,7 @@ import socket
 import stat
 import subprocess
 import sys
+import tarfile
 import tempfile
 import time
 import unicodedata
@@ -33,11 +34,13 @@ from urllib.parse import urlsplit
 
 
 EXPECTED_ORIGIN = "pdxvoiceteacher/triadicbrain-open-alpha"
-EXPECTED_WHEEL_NAME = "triadicbrain-0.1.0a0.dev1-py3-none-any.whl"
-EXPECTED_WHEEL_SHA256 = "67fb178bb9001948598af0e7a88b61b22134121b939e2ed165bc4a07e30bf93e"
-EXPECTED_SDIST_NAME = "triadicbrain-0.1.0a0.dev1.tar.gz"
-EXPECTED_SDIST_SHA256 = "eca30be74f08bc2d774b2f9bf3e14180cdddd135620d286b570c076aeee26e79"
+EXPECTED_WHEEL_NAME = "triadicbrain-0.1.0a0.dev3-py3-none-any.whl"
+EXPECTED_WHEEL_SHA256 = "3da8614355e40462f710b63078988bcb7c2f452b669014b22e2982e9501eee5a"
+EXPECTED_SDIST_NAME = "triadicbrain-0.1.0a0.dev3.tar.gz"
+EXPECTED_SDIST_SHA256 = "7acca7b5ce47ffcaed56e27d4bf2f97ee7190d5bb894bed22a70f7e346f777db"
 EXPECTED_DEMO_SHA256 = "ed2ab14592d7c62a6e82658207680b56246f8c4126bbc0a8f94b3ae83d61202f"
+MPL_LICENSE_SHA256 = "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04"
+UNICODE_LICENSE_SHA256 = "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
 EXPECTED_TOOL_VERSIONS = {
     "build": "1.5.0",
     "fastapi": "0.141.1",
@@ -57,7 +60,7 @@ GATES = (
     "toolchain_inventory_and_pip_check",
     "root_unittest",
     "complete_pytest",
-    "oa01_private_repository_validation",
+    "rl02_private_repository_validation",
     "documentation_and_links",
     "deterministic_wheel_build",
     "deterministic_sdist_build",
@@ -656,8 +659,42 @@ class Runner:
         payload = sdist_a.read_bytes()
         if payload != sdist_b.read_bytes() or sha256_bytes(payload) != EXPECTED_SDIST_SHA256:
             raise GateFailure("sdist reproducibility or expected identity mismatch")
+        with tarfile.open(sdist_a, "r:gz") as archive:
+            names = archive.getnames()
+            if names != sorted(names) or len(names) != len(set(names)):
+                raise GateFailure("sdist member order or uniqueness mismatch")
+            root = "triadicbrain-0.1.0a0.dev3"
+            required = {
+                f"{root}/LICENSE": MPL_LICENSE_SHA256,
+                f"{root}/licenses/Unicode-3.0.txt": UNICODE_LICENSE_SHA256,
+            }
+            required_documents = {
+                "AI_ASSISTANCE_DISCLOSURE.md", "CONTRIBUTORS.md", "DEPENDENCIES.md",
+                "LICENSE", "LICENSE_SCOPE.md", "NOTICE", "THIRD_PARTY_NOTICES.md",
+                "licenses/Unicode-3.0.txt",
+            }
+            for relative in required_documents:
+                if f"{root}/{relative}" not in names:
+                    raise GateFailure(f"sdist required document missing: {relative}")
+            for name, expected in required.items():
+                extracted = archive.extractfile(name)
+                if extracted is None or sha256_bytes(extracted.read()) != expected:
+                    raise GateFailure(f"sdist license identity mismatch: {name}")
+            pkg_info = archive.extractfile(f"{root}/PKG-INFO")
+            if pkg_info is None:
+                raise GateFailure("sdist PKG-INFO missing")
+            metadata = pkg_info.read().decode("utf-8", errors="strict")
+            if (
+                "\nRequires-Dist:" in "\n" + metadata
+                or metadata.count("License-Expression: MPL-2.0 AND Unicode-3.0\n") != 1
+                or "Classifier: License :: OSI Approved :: Mozilla Public License 2.0" in metadata
+            ):
+                raise GateFailure("sdist dependency or license metadata mismatch")
         self.sdist_a = sdist_a
-        return {"bytes": len(payload), "name": sdist_a.name, "sha256": sha256_bytes(payload)}
+        return {
+            "bytes": len(payload), "member_count": len(names),
+            "name": sdist_a.name, "sha256": sha256_bytes(payload),
+        }
 
     def gate_10(self) -> dict[str, Any]:
         if self.wheel_a is None:
@@ -691,7 +728,7 @@ class Runner:
                 if info.create_system != 3 or stat.S_IFMT(mode) != stat.S_IFREG or stat.S_IMODE(mode) != 0o644:
                     raise GateFailure("wheel member metadata check failed")
             roots = {name.split("/", 1)[0] for name in names}
-            dist_info = "triadicbrain-0.1.0a0.dev1.dist-info"
+            dist_info = "triadicbrain-0.1.0a0.dev3.dist-info"
             if roots != {"atlas", "coherence", "sophia", "triadicbrain", dist_info}:
                 raise GateFailure("wheel package boundary mismatch")
             if any(
@@ -701,8 +738,24 @@ class Runner:
             ):
                 raise GateFailure("wheel contains excluded source or cache content")
             metadata = archive.read(f"{dist_info}/METADATA").decode("utf-8", errors="strict")
-            if "\nRequires-Dist:" in "\n" + metadata or "Name: triadicbrain\n" not in metadata or "Version: 0.1.0a0.dev1\n" not in metadata:
+            if (
+                "\nRequires-Dist:" in "\n" + metadata
+                or "Metadata-Version: 2.4\n" not in metadata
+                or "Name: triadicbrain\n" not in metadata
+                or "Version: 0.1.0a0.dev3\n" not in metadata
+                or metadata.count("License-Expression: MPL-2.0 AND Unicode-3.0\n") != 1
+                or "License-File: LICENSE\n" not in metadata
+                or "License-File: licenses/Unicode-3.0.txt\n" not in metadata
+                or "Classifier: License :: OSI Approved :: Mozilla Public License 2.0" in metadata
+            ):
                 raise GateFailure("wheel dependency or identity metadata mismatch")
+            license_members = {
+                f"{dist_info}/licenses/LICENSE": MPL_LICENSE_SHA256,
+                f"{dist_info}/licenses/licenses/Unicode-3.0.txt": UNICODE_LICENSE_SHA256,
+            }
+            for name, expected in license_members.items():
+                if name not in names or sha256_bytes(archive.read(name)) != expected:
+                    raise GateFailure(f"wheel license identity mismatch: {name}")
             record_name = f"{dist_info}/RECORD"
             record_rows = list(csv.reader(archive.read(record_name).decode("utf-8", errors="strict").splitlines()))
             if len(record_rows) != len(names) or any(len(row) != 3 for row in record_rows):
@@ -784,16 +837,28 @@ class Runner:
             env=self._isolated_env(),
         )
         value = parse_canonical_object(completed.stdout, "doctor stdout")
+        expected_rights_posture = {
+            "candidate_review_status": "PENDING_INDEPENDENT_REVIEW",
+            "outbound_license_selected": True,
+            "primary_license": "MPL-2.0",
+            "public_release_eligible": False,
+            "status": "HOLD",
+            "third_party_licenses": ["Unicode-3.0"],
+        }
         if (
             value.get("authority_effect") != "NONE"
             or value.get("optional_ollama", {}).get("provider_contacted") is not False
-            or value.get("rights_posture", {}).get("outbound_license_selected") is not False
-            or value.get("rights_posture", {}).get("public_release_eligible") is not False
+            or value.get("rights_posture") != expected_rights_posture
             or value.get("side_effects", {}).get("network_used") is not False
         ):
             raise GateFailure("doctor authority, provider, rights, or network posture mismatch")
         write_json(self.evidence / "doctor_verified.json", value)
-        return {"provider_contacted": False, "public_release_eligible": False}
+        return {
+            "license_expression": "MPL-2.0 AND Unicode-3.0",
+            "provider_contacted": False,
+            "public_release_eligible": False,
+            "rights_posture": expected_rights_posture,
+        }
 
     def gate_13(self) -> dict[str, Any]:
         if self.venv_python is None:
@@ -1055,10 +1120,11 @@ class Runner:
             "first_failed_gate": first_failed["gate"] if first_failed else None,
             "gates": self.gates,
             "model_provider_invoked": False,
-            "outbound_license_selected": False,
+            "outbound_license": "MPL-2.0 AND Unicode-3.0",
+            "outbound_license_candidate_only": True,
             "public_release_eligible": False,
             "repository_mode": self.mode,
-            "schema": "uvlm.gh01.private_alpha_ci_result.v1",
+            "schema": "uvlm.rl02.private_alpha_ci_result.v1",
             "status": "PASS" if passed else "HOLD",
         }
         if error is not None and first_failed is None:

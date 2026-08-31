@@ -3,6 +3,10 @@
 **Private alpha-staging whitepaper**  
 **Public rights: HOLD · Authority effect: NONE**
 
+MPL-2.0 is selected as the primary private-candidate license, while Unicode-3.0
+applies to embedded Unicode data. This selection does not clear any of the 158
+rights HOLD rows or authorize public release.
+
 ## The user problem
 
 **[IMPLEMENTED]** A person reviewing AI output often receives one fluent block
@@ -100,8 +104,9 @@ of scientific validity in this alpha.
 ## Roadmap and governance of change
 
 **[PROPOSED]** The next meaningful steps are independent exact-hash review,
-human rights attestation, notice repair, outbound-license selection, clean
-Windows acceptance, and separately authorized local-provider/usability studies.
+human rights attestation, verification of the selected license and notice
+posture, clean Windows acceptance, and separately authorized
+local-provider/usability studies.
 
 **[IMPLEMENTED]** Candidate governance is identity-specific: source commit and
 tree, projected paths and blobs, schemas, tests, build hashes, and human

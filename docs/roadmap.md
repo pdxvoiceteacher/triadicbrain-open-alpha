@@ -13,6 +13,9 @@ that remain outside OA-01. It is not a release promise.
   implementation route; the current fixture demonstration is not that evidence.
 - **[IMPLEMENTED]** Approachable documentation, claim ledger, lineage, rights,
   and notice evidence surfaces.
+- **[IMPLEMENTED]** MPL-2.0 is selected as the primary private-candidate
+  license, with Unicode-3.0 applying to embedded Unicode data. All 158 rights
+  rows remain HOLD and public release remains unauthorized.
 - **[PROPOSED]** Independent exact-hash review of the final local candidate and
   its test/build evidence.
 
@@ -24,8 +27,8 @@ in a particular build.
 - **[DEFERRED]** File-level rights-holder attestation for every projected file.
 - **[DEFERRED]** Resolution of third-party excerpts, dependencies, notices, and
   inherited SPDX/project-level notice tensions.
-- **[DEFERRED]** Selection of an outbound license by the authorized human after
-  legal/counsel review.
+- **[DEFERRED]** Independent review of the selected candidate license posture,
+  rights evidence, and third-party notice boundary before any public decision.
 - **[DEFERRED]** Exact-hash authorization for a private GitHub push.
 - **[DEFERRED]** Separate exact-hash public-alpha review and publication decision.
 

@@ -52,9 +52,9 @@ separately authorized, consented, and revocable work.
 
 ## Rights and release boundary
 
-This repository is a private staging projection. Inherited and OA-01-generated
-files remain `public_status=HOLD` until exact-hash human rights attestation,
-third-party/notice closure, and an outbound-license decision are complete.
-`LICENSE_NOT_YET_SELECTED.md` grants no rights. No GitHub remote, push,
-publication, public release, private release, or deployment is authorized by
-OA-01.
+This repository is a private staging projection. MPL-2.0 is selected as the
+primary private-candidate license, and Unicode-3.0 applies to the embedded
+Unicode data. Candidate license selection does not clear the 158 rights rows:
+all remain `public_status=HOLD`, and independent review is pending. No GitHub
+remote, push, publication, public release, private release, or deployment is
+authorized by this candidate.

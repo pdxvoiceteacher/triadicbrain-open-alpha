@@ -49,11 +49,13 @@ def doctor_report() -> dict[str, Any]:
             "version": platform.python_version(),
         },
         "rights_posture": {
-            "outbound_license_selected": False,
+            "candidate_review_status": "PENDING_INDEPENDENT_REVIEW",
+            "outbound_license_selected": True,
+            "primary_license": "MPL-2.0",
             "public_release_eligible": False,
             "status": "HOLD",
+            "third_party_licenses": ["Unicode-3.0"],
         },
         "schema_id": "uvlm.triadicbrain.doctor_report.v1",
         "side_effects": dict(SIDE_EFFECT_DENIALS),
     }
-
