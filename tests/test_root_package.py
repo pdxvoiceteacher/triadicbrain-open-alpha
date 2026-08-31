@@ -3,6 +3,9 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import csv
+import re
+import subprocess
 import sys
 import tarfile
 import tempfile
@@ -11,6 +14,32 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+BASE_COMMIT = "b278378f5add312aa8fb81a6cc1e0dc5fccc49aa"
+MPL_SHA256 = "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04"
+UNICODE_SHA256 = "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
+UCD_SHA256 = "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08"
+DEMO_SHA256 = "ed2ab14592d7c62a6e82658207680b56246f8c4126bbc0a8f94b3ae83d61202f"
+ACTION_PINS = {
+    "actions/checkout": "11d5960a326750d5838078e36cf38b85af677262",
+    "actions/setup-python": "a26af69be951a213d495a4c3e4e4022e16d87065",
+    "actions/upload-artifact": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+}
+UNICODE_PATHS = (
+    "components/CoherenceLattice/python/src/coherence/totality/canonical.py",
+    "components/CoherenceLattice/python/tests/product/test_r3_actual_runtime_boundaries.py",
+    "components/Sophia/python/src/sophia/triadic/totality_audit.py",
+    "components/Sophia/tests/test_totality_audit.py",
+    "components/uvlm-publications/python/src/atlas/triadic/totality_posture.py",
+    "components/uvlm-publications/tests/test_atlas_totality_posture.py",
+)
+MPL_PATHS = (
+    "components/CoherenceLattice/python/src/coherence/totality/atlas_contract.py",
+    "components/CoherenceLattice/python/src/coherence/totality/canonical.py",
+    "components/CoherenceLattice/python/src/coherence/totality/grounding.py",
+    "components/CoherenceLattice/python/src/coherence/totality/seal.py",
+    "components/CoherenceLattice/python/src/coherence/totality/ucm.py",
+    "components/CoherenceLattice/python/src/coherence/totality/waveform.py",
+)
 sys.path.insert(0, str(ROOT / "src"))
 
 from triadicbrain.contracts import ContractError, parse_canonical_object  # noqa: E402
@@ -29,6 +58,20 @@ def _backend():
     return module
 
 
+def _range_rows(payload: bytes, test_path: bool) -> tuple[str, ...]:
+    text = payload.decode("utf-8")
+    marker = (
+        "EXPECTED_DEFAULT_IGNORABLE_CODE_POINT_RANGES = ("
+        if test_path else "DEFAULT_IGNORABLE_CODE_POINT_RANGES = ("
+    )
+    start = text.index(marker)
+    end = text.index("\n)", start)
+    return tuple(
+        line.strip() for line in text[start:end].splitlines()[1:]
+        if re.fullmatch(r"\(0x[0-9A-F]+, 0x[0-9A-F]+\),", line.strip())
+    )
+
+
 class RootPackageTests(unittest.TestCase):
     def test_doctor_is_read_only_and_conservative(self) -> None:
         report = doctor_report()
@@ -45,6 +88,8 @@ class RootPackageTests(unittest.TestCase):
             result_a = run_demo(first)
             result_b = run_demo(second)
             self.assertEqual(result_a, result_b)
+            self.assertEqual(result_a["artifact_set_sha256"], DEMO_SHA256)
+            self.assertFalse(result_a["provider_invoked"])
             names_a = sorted(path.name for path in first.iterdir())
             names_b = sorted(path.name for path in second.iterdir())
             self.assertEqual(names_a, names_b)
@@ -93,6 +138,61 @@ class RootPackageTests(unittest.TestCase):
             validate_request_policy(**post)
         validate_request_policy(**dict(valid, method="POST", csrf_token="expected"))
 
+    def test_rl02_license_notice_rights_and_identity_posture(self) -> None:
+        self.assertEqual(hashlib.sha256((ROOT / "LICENSE").read_bytes()).hexdigest(), MPL_SHA256)
+        self.assertEqual(
+            hashlib.sha256((ROOT / "licenses" / "Unicode-3.0.txt").read_bytes()).hexdigest(),
+            UNICODE_SHA256,
+        )
+        self.assertFalse((ROOT / "LICENSE_NOT_YET_SELECTED.md").exists())
+        scope = (ROOT / "LICENSE_SCOPE.md").read_text(encoding="utf-8")
+        third_party = (ROOT / "THIRD_PARTY_NOTICES.md").read_text(encoding="utf-8")
+        self.assertIn("MPL-2.0", scope)
+        self.assertIn("Unicode License V3", scope)
+        self.assertIn(UCD_SHA256, third_party)
+        self.assertIn(UNICODE_SHA256, third_party)
+        self.assertLess(len((ROOT / "components" / "CoherenceLattice" / "README.md").read_bytes()), 6000)
+        with (ROOT / "RIGHTS_EVIDENCE_MATRIX.csv").open(encoding="utf-8", newline="") as handle:
+            rights = list(csv.DictReader(handle))
+        self.assertEqual(len(rights), 158)
+        self.assertEqual(sum(row["record_status"] == "ACTIVE" for row in rights), 156)
+        self.assertEqual(sum(row["record_status"] == "RETIRED" for row in rights), 2)
+        self.assertTrue(all(row["public_status"] == "HOLD" for row in rights))
+        self.assertTrue(all(row["public_release_eligible"] == "false" for row in rights))
+        self.assertFalse(any(row["public_status"] == "CLEAR" for row in rights))
+
+    def test_rl02_unicode_ranges_and_mpl_headers_are_preserved(self) -> None:
+        provenance_tokens = (
+            "Unicode provenance: UCD 17.0.0 DerivedCoreProperties.txt",
+            UCD_SHA256,
+            "Unicode License V3",
+        )
+        for relative in UNICODE_PATHS:
+            current = (ROOT / relative).read_bytes()
+            baseline = subprocess.check_output(
+                ["git", "-C", str(ROOT), "show", f"{BASE_COMMIT}:{relative}"]
+            )
+            self.assertTrue(all(token in current.decode("utf-8") for token in provenance_tokens))
+            self.assertEqual(_range_rows(current, "/tests/" in relative), _range_rows(baseline, "/tests/" in relative))
+            self.assertEqual(len(_range_rows(current, "/tests/" in relative)), 17)
+        header = (
+            b"# SPDX-FileCopyrightText: 2026 Thomas Prislac and Ultra Verba, Lux Mentis contributors\n"
+            b"# SPDX-License-Identifier: MPL-2.0\n"
+        )
+        for relative in MPL_PATHS:
+            self.assertTrue((ROOT / relative).read_bytes().startswith(header), relative)
+
+    def test_rl02_action_pins_and_disclosures_are_bounded(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "private-alpha-ci.yml").read_text(encoding="utf-8")
+        matches = re.findall(r"(?m)^\s*uses:\s*([^@\s]+)@([0-9a-f]{40})(?:\s+#.*)?$", workflow)
+        self.assertEqual(dict(matches), ACTION_PINS)
+        self.assertEqual(len(matches), 3)
+        disclosure = (ROOT / "AI_ASSISTANCE_DISCLOSURE.md").read_text(encoding="utf-8")
+        contributors = (ROOT / "CONTRIBUTORS.md").read_text(encoding="utf-8")
+        self.assertIn("does not claim", disclosure)
+        self.assertIn("not legal contributors", contributors)
+        self.assertIn("oa01@local.invalid", contributors)
+
     def test_canonical_parser_rejects_duplicates_and_noncanonical_json(self) -> None:
         with self.assertRaises(ContractError):
             parse_canonical_object(b'{"a":1,"a":2}\n', "duplicate")
@@ -125,6 +225,16 @@ class BuildBackendTests(unittest.TestCase):
                 self.assertTrue(all(info.compress_type == zipfile.ZIP_STORED for info in archive.infolist()))
                 metadata = archive.read(f"{backend.DIST_INFO}/METADATA")
                 self.assertNotIn(b"Requires-Dist:", metadata)
+                self.assertIn(b"Metadata-Version: 2.4\n", metadata)
+                self.assertIn(b"License-Expression: MPL-2.0\n", metadata)
+                self.assertIn(b"License-File: LICENSE\n", metadata)
+                self.assertIn(b"License-File: licenses/Unicode-3.0.txt\n", metadata)
+                mpl_member = f"{backend.DIST_INFO}/licenses/LICENSE"
+                unicode_member = f"{backend.DIST_INFO}/licenses/licenses/Unicode-3.0.txt"
+                self.assertIn(mpl_member, names)
+                self.assertIn(unicode_member, names)
+                self.assertEqual(hashlib.sha256(archive.read(mpl_member)).hexdigest(), MPL_SHA256)
+                self.assertEqual(hashlib.sha256(archive.read(unicode_member)).hexdigest(), UNICODE_SHA256)
                 record = archive.read(f"{backend.DIST_INFO}/RECORD").decode("utf-8")
                 self.assertEqual(len(record.splitlines()), len(names))
             with tarfile.open(sa, "r:gz") as archive:
@@ -132,6 +242,12 @@ class BuildBackendTests(unittest.TestCase):
                 self.assertEqual(names, sorted(names))
                 self.assertIn(f"{backend.SDIST_ROOT}/pyproject.toml", names)
                 self.assertIn(f"{backend.SDIST_ROOT}/tests/test_root_package.py", names)
+                for relative in (
+                    "LICENSE", "licenses/Unicode-3.0.txt", "LICENSE_SCOPE.md", "NOTICE",
+                    "THIRD_PARTY_NOTICES.md", "AI_ASSISTANCE_DISCLOSURE.md", "CONTRIBUTORS.md",
+                    "DEPENDENCIES.md",
+                ):
+                    self.assertIn(f"{backend.SDIST_ROOT}/{relative}", names)
                 self.assertIn(
                     f"{backend.SDIST_ROOT}/components/Sophia/python/src/sophia/triadic/totality_audit.py",
                     names,
@@ -144,6 +260,9 @@ class BuildBackendTests(unittest.TestCase):
         project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
         self.assertEqual(project["build-system"]["requires"], [])
         self.assertEqual(project["project"]["dependencies"], [])
+        self.assertEqual(project["project"]["version"], "0.1.0a0.dev2")
+        self.assertEqual(project["project"]["license"], "MPL-2.0")
+        self.assertEqual(project["project"]["license-files"], ["LICENSE", "licenses/Unicode-3.0.txt"])
         self.assertEqual(project["project"]["scripts"]["triadicbrain"], "triadicbrain.cli:main")
 
 

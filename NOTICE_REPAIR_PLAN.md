@@ -1,49 +1,35 @@
-# Notice repair plan
+# Notice implementation and review plan
 
-**Status: OPEN · Public release: HOLD · Authority effect: NONE**
+**Status:** RL-02 implementation candidate assembled for independent review
 
-This plan records notice work without changing inherited source notices or
-selecting a license.
+**Public release:** HOLD
+**Runtime authority effect:** NONE
 
-## Findings to reconcile
+## Implemented candidate surface
 
-1. The authenticated source root README contains an all-rights-reserved notice
-   naming Thomas Prislac and Aggregation Station.
-2. Six inherited `coherence.totality` source files contain MPL-2.0 SPDX
-   identifiers and a Thomas Prislac / UVLM contributors copyright line.
-3. The inherited CoherenceLattice README describes original work by
-   UVLM/Prislac and collaborators and mentions Mathlib and standard toolchains,
-   but the private projection does not yet have a complete contributor,
-   dependency, permission, or notice inventory.
-4. OA-01 generated files are AI-assisted and require an approved disclosure and
-   human confirmation of the rights posture.
-5. No project-wide outbound license has been selected.
+1. The exact official MPL-2.0 text is present as `LICENSE`.
+2. `LICENSE_SCOPE.md` identifies the MPL scope, Unicode exception, and
+   AI-assisted-rights boundary without narrowing MPL rights.
+3. `NOTICE` attributes Thomas Prislac and Ultra Verba, Lux Mentis contributors
+   and does not adopt Aggregation Station as a current rightsholder.
+4. `CONTRIBUTORS.md` reconciles the two Thomas Git emails, the UVLM project
+   identity, and the OA-01 local staging identity.
+5. The six existing MPL-2.0 SPDX headers are preserved.
+6. `THIRD_PARTY_NOTICES.md` identifies Unicode UCD 17.0.0
+   `Default_Ignorable_Code_Point` provenance, exact source hash, exact license
+   hash, and the six affected paths.
+7. The exact Unicode License V3 bytes are present at
+   `licenses/Unicode-3.0.txt` and are packaged with the distribution.
+8. `AI_ASSISTANCE_DISCLOSURE.md` records the bounded human and automated roles.
+9. `DEPENDENCIES.md` separates root, component, CI, and packaged boundaries.
 
-These observations may coexist for private evidence review, but they are not a
-resolved public licensing posture.
+## Independent review still required
 
-## Required repair sequence
+The review must confirm exact hashes, unchanged range values and SPDX headers,
+notice accuracy, contributor identity treatment, package metadata and members,
+rights/lineage topology, deterministic builds, offline-demo stability, action
+pins, and the no-provider/no-remote-mutation boundary. Every rights row remains
+HOLD and public-release-ineligible until separate authority says otherwise.
 
-1. Freeze the exact candidate commit, tree, source ZIP, sdist, and wheel hashes.
-2. Review every row in `RIGHTS_EVIDENCE_MATRIX.csv` against projection lineage.
-3. Confirm the correct rights holder and contributor for each inherited file;
-   reclassify Group A rows to B or C where evidence requires it.
-4. Identify copied excerpts, vendored material, schema-derived text, assets, and
-   all runtime/build/test dependencies; collect their license and notice texts
-   where inclusion or distribution requires them.
-5. Resolve the six file-level MPL-2.0 SPDX notices without deleting or weakening
-   them. Determine whether they are authorized, whether source-form obligations
-   apply, and how they interact with the broader candidate.
-6. Approve exact AI-assistance disclosure language for Group D files.
-7. Select an outbound license only through a separately signed human decision.
-8. Generate `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES` only after steps 1–7,
-   and validate their wheel/sdist inclusion and hash identity.
-9. Obtain exact-hash public-alpha authorization separately from any private push.
-
-## Current non-action
-
-Do not add a generic license text, remove inherited SPDX lines, infer permission
-from Git history, or treat dependency availability as redistribution authority.
-`LICENSE_NOT_YET_SELECTED.md` remains the only root license-status file in this
-private candidate and grants no rights.
-
+This plan does not claim legal compliance, production readiness, or truth
+certification and does not authorize release or publication.

@@ -1,57 +1,28 @@
 # Outbound license decision memo
 
-**Decision: NOT SELECTED**  
-**Public release: HOLD**  
-**Authority effect: NONE**
+**Decision:** MPL-2.0 for UVLM-controlled and otherwise licensable material
 
-This memo is an internal decision aid, not legal advice and not an operative
-license. OA-01 does not authorize Codex to choose a license.
+**Third-party exception:** Unicode License V3 for embedded UCD data
 
-## Preconditions for a human decision
+**Implementation status:** private RL-02 candidate pending independent review
 
-The authorized human should first complete exact-file rights attestation,
-third-party and contributor review, notice repair, and exact-candidate hash
-verification. Any file without adequate redistribution authority must remain
-held, be replaced, or be excluded before a public candidate.
+**Public release:** HOLD
+**Runtime authority effect:** NONE
 
-## Options carried forward for review
+Thomas Prislac's operative RL-01 decision receipt has SHA-256
+`da4f57bddcd15e9b74029d3797bbb60704e45ffb4f44dbca02d5e763c2b2211f`.
+It binds the exact base commit and tree, the Group A and Group D schedules, the
+official MPL-2.0 and Unicode License V3 bytes, and one bounded private RL-02
+implementation candidate.
 
-The OA-00 material named MPL-2.0 and Apache-2.0 as possibilities for
-human/counsel review. Their appearance here is not a recommendation or
-selection. The reviewer should assess, among other matters:
+The primary license text is [LICENSE](LICENSE). Scope and the Unicode exception
+are explained in [LICENSE_SCOPE.md](LICENSE_SCOPE.md). Project values and
+governance statements do not narrow MPL-2.0 rights. AI-assisted material is
+licensed only to the extent rights exist and the operative human decision
+covers it.
 
-- compatibility with each file's authorized inbound terms, including the six
-  inherited files with MPL-2.0 SPDX identifiers;
-- source, modification, patent, attribution, and notice obligations;
-- treatment of AI-assisted Group D files;
-- dependency and third-party material boundaries;
-- correct owner/contributor names and project notice language;
-- whether the correct decision is no public release.
-
-## Decision record
-
-```text
-Exact candidate commit:
-Exact candidate tree:
-Source ZIP SHA-256:
-Wheel SHA-256:
-Rights matrix SHA-256:
-Notice set SHA-256:
-
-MPL-2.0: [ ]
-Apache-2.0: [ ]
-Other counsel-approved OSI license: [ ]
-No public release: [ ]
-
-Selected license: NOT SELECTED
-Authorized decision-maker:
-Authority basis:
-Counsel review, if any:
-Date:
-Signature or exact-hash approval:
-```
-
-A values or ethical-use statement, if later approved, should be clearly
-separated from the operative license terms. A license decision does not by
-itself authorize a GitHub push, publication, or release.
-
+This decision does not itself establish that every expression is
+copyrightable, prove non-infringement, certify legal compliance, or authorize a
+public release. All rights rows remain HOLD until the candidate and evidence
+receive independent review. Push, merge, tag, publication, deployment, Pages,
+package publication, and provider invocation require separate authority.

@@ -32,6 +32,10 @@ from atlas.triadic.human_review_ui import (  # noqa: E402
 )
 
 
+# Unicode provenance: UCD 17.0.0 DerivedCoreProperties.txt,
+# Default_Ignorable_Code_Point; source SHA-256
+# 24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08.
+# License: Unicode License V3; see the projection root THIRD_PARTY_NOTICES.md.
 EXPECTED_DEFAULT_IGNORABLE_CODE_POINT_RANGES = (
     (0x00AD, 0x00AD),
     (0x034F, 0x034F),

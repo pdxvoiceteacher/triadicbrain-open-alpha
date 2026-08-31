@@ -103,6 +103,10 @@ POSITIVE_AUTHORITY_KEYS = {
     "governance_approved",
 }
 
+# Unicode provenance: UCD 17.0.0 DerivedCoreProperties.txt,
+# Default_Ignorable_Code_Point; source SHA-256
+# 24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08.
+# License: Unicode License V3; see the projection root THIRD_PARTY_NOTICES.md.
 # Local frozen copy of the cross-owner Unicode DerivedCoreProperties
 # Default_Ignorable_Code_Point profile.  Sophia must not import Coherence code
 # to validate an upstream artifact.

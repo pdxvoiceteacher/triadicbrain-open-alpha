@@ -24,12 +24,12 @@ TEXT_SUFFIXES = {
 REPOSITORY_MODES = {"local-source-candidate", "private-github"}
 RECORD_STATUSES = {"ACTIVE", "RETIRED"}
 EXPECTED_PRIVATE_ORIGIN = "pdxvoiceteacher/triadicbrain-open-alpha"
-EXPECTED_SUCCESSOR_BRANCH = "gh-readiness/ci-validator-01"
-EXPECTED_CANDIDATE_LABEL = "v0.1.0-alpha.0-private.2-rc2"
+EXPECTED_SUCCESSOR_BRANCH = "rights-license/mpl-unicode-notices-01"
+EXPECTED_CANDIDATE_LABEL = "v0.1.0-alpha.0-private.3-rc1"
 EXPECTED_BASELINE_TAG = "v0.1.0-alpha.0-private.1"
 EXPECTED_BASELINE = {
-    "commit": "e2900baeba3bbc8cfd11bc9544f2ed48068b6b5c",
-    "tree": "ac52f7b0eb6972327cd71cab4113e2ba6b29ccb2",
+    "commit": "b278378f5add312aa8fb81a6cc1e0dc5fccc49aa",
+    "tree": "aefe9503e8f0ede0d7d5ab3de9f93a8e25a3668e",
 }
 EXPECTED_ACTIVE_WORKFLOWS = [".github/workflows/private-alpha-ci.yml"]
 EXPECTED_RETIRED_WORKFLOWS = [".github/workflows/triadicgate-ci.yml"]
@@ -38,16 +38,16 @@ EXPECTED_SUPERSEDED_WORKFLOWS = [
     ".github/workflows/oa01-windows-python312.yml",
 ]
 EXPECTED_MANIFEST_COUNTS = {
-    "active_source_file_count": 149,
-    "retired_source_file_count": 1,
+    "active_source_file_count": 156,
+    "retired_source_file_count": 2,
     "lineage_active_count": 107,
-    "lineage_retired_count": 1,
+    "lineage_retired_count": 2,
     "excluded_active_count": 8418,
-    "excluded_retired_count": 1,
-    "excluded_source_count": 8419,
-    "rights_active_count": 149,
-    "rights_retired_count": 1,
-    "rights_hold_count": 150,
+    "excluded_retired_count": 2,
+    "excluded_source_count": 8420,
+    "rights_active_count": 156,
+    "rights_retired_count": 2,
+    "rights_hold_count": 158,
     "rights_clear_count": 0,
 }
 PRIVACY_METADATA_SOURCES = {
@@ -55,6 +55,79 @@ PRIVACY_METADATA_SOURCES = {
     "GITHUB_API_AUTHENTICATED",
 }
 RETIRED_WORKFLOW_REASON = "RETIRED_INAPPLICABLE_UPSTREAM_INTEGRATION_WORKFLOW"
+RETIRED_LICENSE_REASON = "RETIRED_RL02_OBSOLETE_LICENSE_PLACEHOLDER"
+EXPECTED_RETIRED_PATHS = [
+    ".github/workflows/triadicgate-ci.yml",
+    "LICENSE_NOT_YET_SELECTED.md",
+]
+MPL_LICENSE_SHA256 = "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04"
+UNICODE_LICENSE_SHA256 = "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
+UNICODE_SOURCE_SHA256 = "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08"
+REDISTRIBUTION_AUTHORITY = "HUMAN_APPROVED_RL02_CANDIDATE_PENDING_INDEPENDENT_REVIEW"
+ACTION_PINS = {
+    "actions/checkout": "11d5960a326750d5838078e36cf38b85af677262",
+    "actions/setup-python": "a26af69be951a213d495a4c3e4e4022e16d87065",
+    "actions/upload-artifact": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+}
+UNICODE_PATHS = {
+    "components/CoherenceLattice/python/src/coherence/totality/canonical.py",
+    "components/CoherenceLattice/python/tests/product/test_r3_actual_runtime_boundaries.py",
+    "components/Sophia/python/src/sophia/triadic/totality_audit.py",
+    "components/Sophia/tests/test_totality_audit.py",
+    "components/uvlm-publications/python/src/atlas/triadic/totality_posture.py",
+    "components/uvlm-publications/tests/test_atlas_totality_posture.py",
+}
+EXPECTED_UNICODE_RANGE_ROWS = (
+    "(0x00AD, 0x00AD),", "(0x034F, 0x034F),", "(0x061C, 0x061C),",
+    "(0x115F, 0x1160),", "(0x17B4, 0x17B5),", "(0x180B, 0x180F),",
+    "(0x200B, 0x200F),", "(0x202A, 0x202E),", "(0x2060, 0x206F),",
+    "(0x3164, 0x3164),", "(0xFE00, 0xFE0F),", "(0xFEFF, 0xFEFF),",
+    "(0xFFA0, 0xFFA0),", "(0xFFF0, 0xFFF8),", "(0x1BCA0, 0x1BCA3),",
+    "(0x1D173, 0x1D17A),", "(0xE0000, 0xE0FFF),",
+)
+MPL_MARKED_PATHS = {
+    "components/CoherenceLattice/python/src/coherence/totality/atlas_contract.py",
+    "components/CoherenceLattice/python/src/coherence/totality/canonical.py",
+    "components/CoherenceLattice/python/src/coherence/totality/grounding.py",
+    "components/CoherenceLattice/python/src/coherence/totality/seal.py",
+    "components/CoherenceLattice/python/src/coherence/totality/ucm.py",
+    "components/CoherenceLattice/python/src/coherence/totality/waveform.py",
+}
+CHANGED_PATH_CLASSIFICATIONS = {
+    "LICENSE": "LICENSE_TEXT",
+    "licenses/Unicode-3.0.txt": "LICENSE_TEXT",
+    "NOTICE": "THIRD_PARTY_NOTICE",
+    "THIRD_PARTY_NOTICES.md": "THIRD_PARTY_NOTICE",
+    **{path: "THIRD_PARTY_NOTICE" for path in UNICODE_PATHS},
+    "AI_ASSISTANCE_DISCLOSURE.md": "DISCLOSURE",
+    "CONTRIBUTORS.md": "DISCLOSURE",
+    "DEPENDENCIES.md": "DISCLOSURE",
+    "components/CoherenceLattice/README.md": "AMBIGUOUS_NOTICE_REPLACEMENT",
+    "LICENSE_NOT_YET_SELECTED.md": "AMBIGUOUS_NOTICE_REPLACEMENT",
+    "pyproject.toml": "PACKAGE_METADATA",
+    "_triadicbrain_build_backend.py": "DETERMINISTIC_PACKAGING",
+    ".github/workflows/private-alpha-ci.yml": "ACTION_PIN",
+    "tools/oa01_validate.py": "VALIDATOR_OR_TEST",
+    "tools/run_private_alpha_ci.py": "VALIDATOR_OR_TEST",
+    "tests/test_root_package.py": "VALIDATOR_OR_TEST",
+    "tools/write_projection_records.py": "RIGHTS_OR_LINEAGE_RECORD",
+    "PROJECTION_LINEAGE.csv": "RIGHTS_OR_LINEAGE_RECORD",
+    "EXCLUDED_PATHS.csv": "RIGHTS_OR_LINEAGE_RECORD",
+    "REPLACED_PATHS.csv": "RIGHTS_OR_LINEAGE_RECORD",
+    "RIGHTS_EVIDENCE_MATRIX.csv": "RIGHTS_OR_LINEAGE_RECORD",
+    "PUBLIC_PROJECTION_MANIFEST.json": "RIGHTS_OR_LINEAGE_RECORD",
+    "THIRD_PARTY_SNIPPET_AND_LICENSE_FINDINGS.csv": "RIGHTS_OR_LINEAGE_RECORD",
+    "LICENSE_SCOPE.md": "VERSION_OR_STATUS_DOCUMENT",
+    "README.md": "VERSION_OR_STATUS_DOCUMENT",
+    "CONTRIBUTING.md": "VERSION_OR_STATUS_DOCUMENT",
+    "LICENSE_DECISION_MEMO.md": "VERSION_OR_STATUS_DOCUMENT",
+    "HUMAN_RIGHTS_ATTESTATION_REQUIRED.md": "VERSION_OR_STATUS_DOCUMENT",
+    "NOTICE_REPAIR_PLAN.md": "VERSION_OR_STATUS_DOCUMENT",
+    "docs/getting-started.md": "VERSION_OR_STATUS_DOCUMENT",
+    "src/triadicbrain/__init__.py": "VERSION_OR_STATUS_DOCUMENT",
+}
+if len(CHANGED_PATH_CLASSIFICATIONS) != 36:
+    raise RuntimeError("RL-02 changed-path classification count mismatch")
 WINDOWS_REPARSE_ATTRIBUTE = 0x400
 
 
@@ -514,9 +587,17 @@ def check_lineage(root: Path, files: list[Path]) -> dict[str, object]:
             retired_paths.append(projected)
             if target.exists() or target.is_symlink():
                 errors.append({"path": projected, "error": "retired projected path is present"})
-            if row.get("classification") != RETIRED_WORKFLOW_REASON:
+            expected_retired = {
+                ".github/workflows/triadicgate-ci.yml": (
+                    RETIRED_WORKFLOW_REASON, "TRUE_RETIRED_BASELINE"
+                ),
+                "LICENSE_NOT_YET_SELECTED.md": (
+                    RETIRED_LICENSE_REASON, "TRUE_RETIRED_RL02_BASE"
+                ),
+            }.get(projected)
+            if expected_retired is None or row.get("classification") != expected_retired[0]:
                 errors.append({"path": projected, "error": "retired classification mismatch"})
-            if row.get("byte_identity") != "TRUE_RETIRED_BASELINE":
+            if expected_retired is None or row.get("byte_identity") != expected_retired[1]:
                 errors.append({"path": projected, "error": "retired byte identity mismatch"})
             if source != projected:
                 errors.append({"path": projected, "error": "retired source/projected path mismatch"})
@@ -545,10 +626,15 @@ def check_lineage(root: Path, files: list[Path]) -> dict[str, object]:
                 errors.append({"path": projected, "error": "byte-identical classification mismatch"})
             if row.get("source_sha256") != digest or row.get("source_size_bytes") != size:
                 errors.append({"path": projected, "error": "declared byte identity mismatch"})
-        elif byte_identity in {"FALSE_REPLACED", "FALSE_GH01_SUCCESSOR_MODIFIED"}:
+        elif byte_identity in {
+            "FALSE_REPLACED", "FALSE_GH01_SUCCESSOR_MODIFIED",
+            "FALSE_RL02_PROVENANCE_COMMENT_ONLY", "FALSE_RL02_REPLACED",
+        }:
             expected_classification = {
                 "FALSE_REPLACED": "REPLACED_BY_OA01",
                 "FALSE_GH01_SUCCESSOR_MODIFIED": "GH01_SUCCESSOR_MODIFIED",
+                "FALSE_RL02_PROVENANCE_COMMENT_ONLY": "RL02_UNICODE_PROVENANCE_COMMENT_ONLY",
+                "FALSE_RL02_REPLACED": "REPLACED_BY_RL02_BOUNDED_NOTICE_DOCUMENTATION",
             }[byte_identity]
             if row.get("classification") != expected_classification:
                 errors.append({"path": projected, "error": "replacement classification mismatch"})
@@ -556,7 +642,7 @@ def check_lineage(root: Path, files: list[Path]) -> dict[str, object]:
                 errors.append({"path": projected, "error": "replacement is not byte-distinct"})
         else:
             errors.append({"path": projected, "error": "invalid active byte identity"})
-    if sorted(retired_paths) != EXPECTED_RETIRED_WORKFLOWS:
+    if sorted(retired_paths) != EXPECTED_RETIRED_PATHS:
         errors.append({"path": "PROJECTION_LINEAGE.csv", "error": "retired path set mismatch"})
     actual_paths = {relative(path, root) for path in files}
     active_outside_source = sorted(set(active_paths) - actual_paths)
@@ -608,7 +694,11 @@ def check_exclusions(root: Path) -> dict[str, object]:
             active_count += 1
         else:
             retired_count += 1
-            if row.get("reason") != RETIRED_WORKFLOW_REASON:
+            expected_reason = {
+                ".github/workflows/triadicgate-ci.yml": RETIRED_WORKFLOW_REASON,
+                "LICENSE_NOT_YET_SELECTED.md": RETIRED_LICENSE_REASON,
+            }.get(source)
+            if expected_reason is None or row.get("reason") != expected_reason:
                 errors.append({"path": source, "error": "retired reason mismatch"})
         if row.get("copied") != "false":
             errors.append({"path": source, "error": "excluded row is not marked copied=false"})
@@ -617,7 +707,7 @@ def check_exclusions(root: Path) -> dict[str, object]:
     retired_paths = sorted(
         row.get("source_path", "") for row in rows if row.get("record_status") == "RETIRED"
     )
-    if retired_paths != EXPECTED_RETIRED_WORKFLOWS:
+    if retired_paths != EXPECTED_RETIRED_PATHS:
         errors.append({"path": "EXCLUDED_PATHS.csv", "error": "retired path set mismatch"})
     return {
         "status": "PASS" if rows and not errors else "FAIL",
@@ -662,24 +752,35 @@ def check_rights_coverage(root: Path, files: list[Path]) -> dict[str, object]:
             continue
         if value in retired_paths and (target.exists() or target.is_symlink()):
             retired_present.append(value)
-    invalid_posture = [
-        row.get("path", "") for row in rows
-        if row.get("authority_effect") != "NONE"
-        or row.get("public_release_eligible") != "false"
-        or row.get("public_status") != "HOLD"
-        or row.get("outbound_license") != "NOT_SELECTED"
-    ]
+    invalid_posture = []
+    for row in rows:
+        is_active = row.get("record_status") == "ACTIVE"
+        allowed_license = (
+            row.get("outbound_license") in {
+                "MPL-2.0", "MPL-2.0_WITH_UNICODE_LICENSE_V3_EXCEPTION"
+            } if is_active else row.get("outbound_license") == "NOT_APPLICABLE_RETIRED"
+        )
+        if (
+            row.get("authority_effect") != "NONE"
+            or row.get("public_release_eligible") != "false"
+            or row.get("public_status") != "HOLD"
+            or not allowed_license
+            or row.get("redistribution_authority") != REDISTRIBUTION_AUTHORITY
+        ):
+            invalid_posture.append(row.get("path", ""))
     invalid_retired = [
         row.get("path", "") for row in retired_rows
-        if row.get("modification_status") != "RETIRED_IN_GH01_SUCCESSOR"
+        if row.get("modification_status") not in {
+            "RETIRED_IN_GH01_SUCCESSOR", "RETIRED_IN_RL02_SUCCESSOR"
+        }
     ]
     invalid_active = [
         row.get("path", "") for row in active_rows
-        if row.get("modification_status") == "RETIRED_IN_GH01_SUCCESSOR"
+        if row.get("modification_status", "").startswith("RETIRED_IN_")
     ]
     hold_count = sum(row.get("public_status") == "HOLD" for row in rows)
     clear_count = sum(row.get("public_status") == "CLEAR" for row in rows)
-    retired_path_set_mismatch = sorted(retired_paths) != EXPECTED_RETIRED_WORKFLOWS
+    retired_path_set_mismatch = sorted(retired_paths) != EXPECTED_RETIRED_PATHS
     status = "PASS" if (
         rows
         and not missing_columns
@@ -735,24 +836,33 @@ def check_manifest(
     except (OSError, ValueError, json.JSONDecodeError) as error:
         return {"status": "FAIL", "errors": [str(error)]}
     expected: dict[str, object] = {
-        "schema": "uvlm.gh01.public_projection_manifest.v1",
+        "schema": "uvlm.rl02.public_projection_manifest.v1",
         "candidate_label": EXPECTED_CANDIDATE_LABEL,
         "successor_branch": EXPECTED_SUCCESSOR_BRANCH,
-        "reviewed_baseline": EXPECTED_BASELINE,
+        "reviewed_base": EXPECTED_BASELINE,
         "reviewed_baseline_tag": EXPECTED_BASELINE_TAG,
         "record_status_values": ["ACTIVE", "RETIRED"],
         "active_workflows": EXPECTED_ACTIVE_WORKFLOWS,
         "retired_workflows": EXPECTED_RETIRED_WORKFLOWS,
         "superseded_workflows": EXPECTED_SUPERSEDED_WORKFLOWS,
         "triadicgate_workflow_retirement_reason": RETIRED_WORKFLOW_REASON,
+        "retired_license_placeholder_reason": RETIRED_LICENSE_REASON,
         "repository_visibility": "PRIVATE",
-        "github_actions": "REMAIN_DISABLED",
+        "github_actions": "RESTRICTED_GITHUB_OWNED_ACTIONS_FULL_SHA_PINS_SOURCE_DEFINED",
         "remote_push": False,
-        "rights_status": "HOLD",
+        "rights_status": "HUMAN_APPROVED_IMPLEMENTATION_CANDIDATE_PENDING_INDEPENDENT_REVIEW",
         "authority_effect": "NONE",
+        "runtime_authority_effect": "NONE",
+        "human_authority_effect": "RIGHTS_AND_LICENSE_IMPLEMENTATION_CANDIDATE_ONLY",
         "public_release": False,
         "public_release_eligible": False,
-        "outbound_license": "NOT_SELECTED",
+        "outbound_license": "MPL-2.0 with Unicode License V3 exception",
+        "python_distribution_version": "0.1.0a0.dev2",
+        "mpl_license_sha256": MPL_LICENSE_SHA256,
+        "unicode_license_sha256": UNICODE_LICENSE_SHA256,
+        "unicode_ucd_source_sha256": UNICODE_SOURCE_SHA256,
+        "unicode_affected_paths": sorted(UNICODE_PATHS),
+        "action_pins": ACTION_PINS,
         **EXPECTED_MANIFEST_COUNTS,
     }
     for key, expected_value in expected.items():
@@ -798,6 +908,191 @@ def check_manifest(
     }
 
 
+def git_show_bytes(root: Path, revision: str, path: str) -> bytes:
+    completed = subprocess.run(
+        ["git", "-C", str(root), "show", f"{revision}:{path}"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if completed.returncode != 0:
+        raise ValueError(f"Git object unavailable: {revision}:{path}")
+    return completed.stdout
+
+
+def unicode_range_block(payload: bytes, test_path: bool) -> tuple[str, ...]:
+    text = payload.decode("utf-8")
+    marker = (
+        "EXPECTED_DEFAULT_IGNORABLE_CODE_POINT_RANGES = ("
+        if test_path else "DEFAULT_IGNORABLE_CODE_POINT_RANGES = ("
+    )
+    start = text.find(marker)
+    if start < 0:
+        raise ValueError("Unicode range marker missing")
+    end = text.find("\n)", start)
+    if end < 0:
+        raise ValueError("Unicode range block is unterminated")
+    rows = tuple(
+        line.strip() for line in text[start:end].splitlines()[1:]
+        if re.fullmatch(r"\(0x[0-9A-F]+, 0x[0-9A-F]+\),", line.strip())
+    )
+    if len(rows) != 17:
+        raise ValueError("Unicode range cardinality mismatch")
+    return rows
+
+
+def check_rl02_surface(root: Path) -> dict[str, object]:
+    errors: list[str] = []
+    hashes: dict[str, str] = {}
+    for relative_name, expected in (
+        ("LICENSE", MPL_LICENSE_SHA256),
+        ("licenses/Unicode-3.0.txt", UNICODE_LICENSE_SHA256),
+    ):
+        target = record_target(root, relative_name)
+        if not target.is_file() or target.is_symlink():
+            errors.append(f"missing exact license input: {relative_name}")
+            continue
+        digest = hashlib.sha256(target.read_bytes()).hexdigest()
+        hashes[relative_name] = digest
+        if digest != expected:
+            errors.append(f"license hash mismatch: {relative_name}")
+
+    required_documents = {
+        "LICENSE_SCOPE.md", "NOTICE", "THIRD_PARTY_NOTICES.md",
+        "AI_ASSISTANCE_DISCLOSURE.md", "CONTRIBUTORS.md", "DEPENDENCIES.md",
+    }
+    for relative_name in sorted(required_documents):
+        target = record_target(root, relative_name)
+        if not target.is_file() or target.is_symlink() or not target.read_bytes():
+            errors.append(f"missing or empty RL-02 document: {relative_name}")
+    placeholder = root / "LICENSE_NOT_YET_SELECTED.md"
+    if placeholder.exists() or placeholder.is_symlink():
+        errors.append("retired license placeholder remains present")
+
+    expected_comment_parts = (
+        "Unicode provenance: UCD 17.0.0 DerivedCoreProperties.txt",
+        "Default_Ignorable_Code_Point; source SHA-256",
+        UNICODE_SOURCE_SHA256,
+        "License: Unicode License V3",
+    )
+    range_results: dict[str, object] = {}
+    for path in sorted(UNICODE_PATHS):
+        target = record_target(root, path)
+        if not target.is_file() or target.is_symlink():
+            errors.append(f"Unicode path missing: {path}")
+            continue
+        current = target.read_bytes()
+        text = current.decode("utf-8")
+        if any(part not in text for part in expected_comment_parts):
+            errors.append(f"Unicode provenance comment mismatch: {path}")
+        try:
+            current_ranges = unicode_range_block(current, "/tests/" in path)
+            range_results[path] = {
+                "range_count": len(current_ranges),
+                "unchanged": current_ranges == EXPECTED_UNICODE_RANGE_ROWS,
+            }
+            if current_ranges != EXPECTED_UNICODE_RANGE_ROWS:
+                errors.append(f"Unicode range drift: {path}")
+        except (UnicodeDecodeError, ValueError) as error:
+            errors.append(f"Unicode range validation failed for {path}: {error}")
+
+    exact_mpl_header = (
+        "# SPDX-FileCopyrightText: 2026 Thomas Prislac and Ultra Verba, Lux Mentis contributors\n"
+        "# SPDX-License-Identifier: MPL-2.0\n"
+    ).encode("utf-8")
+    for path in sorted(MPL_MARKED_PATHS):
+        target = record_target(root, path)
+        if not target.is_file() or not target.read_bytes().startswith(exact_mpl_header):
+            errors.append(f"MPL SPDX header mismatch: {path}")
+
+    workflow = (root / ".github" / "workflows" / "private-alpha-ci.yml")
+    uses_rows: dict[str, str] = {}
+    if workflow.is_file() and not workflow.is_symlink():
+        workflow_text = workflow.read_text(encoding="utf-8")
+        uses_matches = re.findall(
+            r"(?m)^\s*uses:\s*([^@\s]+)@([0-9a-f]{40})(?:\s+#.*)?$", workflow_text
+        )
+        uses_rows = dict(uses_matches)
+        if len(uses_matches) != 3 or uses_rows != ACTION_PINS:
+            errors.append("GitHub Actions full-SHA allowlist mismatch")
+        if len(re.findall(r"(?m)^\s*uses:\s*", workflow_text)) != 3:
+            errors.append("unreviewed GitHub Action use found")
+    else:
+        errors.append("private-alpha workflow missing")
+
+    scope_text = (root / "LICENSE_SCOPE.md").read_text(encoding="utf-8")
+    for token in (
+        "MPL-2.0", "Unicode License V3", "AI-assisted material",
+        "do not narrow", "public-release HOLD",
+    ):
+        if token not in scope_text:
+            errors.append(f"license scope token missing: {token}")
+    third_party_text = (root / "THIRD_PARTY_NOTICES.md").read_text(encoding="utf-8")
+    for token in ("UCD 17.0.0", "Default_Ignorable_Code_Point", UNICODE_SOURCE_SHA256, UNICODE_LICENSE_SHA256):
+        if token not in third_party_text:
+            errors.append(f"third-party notice token missing: {token}")
+    for path in UNICODE_PATHS:
+        if f"`{path}`" not in third_party_text:
+            errors.append(f"third-party notice path missing: {path}")
+
+    contributor_text = (root / "CONTRIBUTORS.md").read_text(encoding="utf-8")
+    for token in (
+        "thomas@thomasprislac.com", "YOUR_EMAIL@example.com",
+        "pdxvoiceteacher@gmail.com", "oa01@local.invalid",
+        "not legal contributors",
+    ):
+        if token not in contributor_text:
+            errors.append(f"contributor identity token missing: {token}")
+    disclosure_text = (root / "AI_ASSISTANCE_DISCLOSURE.md").read_text(encoding="utf-8")
+    for token in (
+        "human commissioning", "selection", "integration", "testing",
+        "rejection and revision", "exact-byte approval", "does not claim",
+    ):
+        if token not in disclosure_text:
+            errors.append(f"AI disclosure token missing: {token}")
+
+    pyproject_text = (root / "pyproject.toml").read_text(encoding="utf-8")
+    for token in (
+        'version = "0.1.0a0.dev2"', "dependencies = []", 'license = "MPL-2.0"',
+        'license-files = ["LICENSE", "licenses/Unicode-3.0.txt"]',
+    ):
+        if token not in pyproject_text:
+            errors.append(f"project metadata token missing: {token}")
+    component_readme = (root / "components" / "CoherenceLattice" / "README.md").read_text(encoding="utf-8")
+    if "and collaborators" in component_readme.casefold() or len(component_readme.encode("utf-8")) > 6000:
+        errors.append("bounded CoherenceLattice README contract mismatch")
+
+    base_probe = subprocess.run(
+        ["git", "-C", str(root), "cat-file", "-e", f"{EXPECTED_BASELINE['commit']}^{{commit}}"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    changed: set[str] | None = None
+    if base_probe.returncode == 0:
+        try:
+            changed = set(git_lines(root, "diff", "--name-only", EXPECTED_BASELINE["commit"], "--"))
+            changed.update(git_lines(root, "ls-files", "--others", "--exclude-standard"))
+            changed = {path.replace("\\", "/") for path in changed}
+        except (OSError, subprocess.SubprocessError):
+            errors.append("RL-02 changed surface unavailable")
+        if changed is not None and changed != set(CHANGED_PATH_CLASSIFICATIONS):
+            errors.append("RL-02 changed path ceiling or classification mismatch")
+
+    return {
+        "status": "PASS" if not errors else "FAIL",
+        "license_sha256": hashes,
+        "unicode_ranges": range_results,
+        "action_pins": uses_rows,
+        "changed_path_count": len(changed) if changed is not None else 36,
+        "changed_surface_basis": "BASE_COMMIT_DIFF" if changed is not None else "CANONICAL_COMMITTED_FIXTURE",
+        "changed_path_classifications": {
+            path: CHANGED_PATH_CLASSIFICATIONS[path] for path in sorted(CHANGED_PATH_CLASSIFICATIONS)
+        },
+        "errors": errors,
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
@@ -822,8 +1117,9 @@ def main() -> int:
     exclusions = check_exclusions(root)
     rights = check_rights_coverage(root, files)
     manifest = check_manifest(root, files, lineage, exclusions, rights)
+    rl02 = check_rl02_surface(root)
     result = {
-        "schema": "uvlm.gh01.source_validation.v1",
+        "schema": "uvlm.rl02.source_validation.v1",
         "authority_effect": "NONE",
         "repository_mode": repository["repository_mode"],
         "expected_origin": repository["expected_origin"],
@@ -838,6 +1134,7 @@ def main() -> int:
         "exclusions": exclusions,
         "rights": rights,
         "manifest": manifest,
+        "rl02_license_notice": rl02,
         "git_remote": repository,
         "source_file_count": len(files),
         "source_sha256": hashlib.sha256(b"".join(hashlib.sha256(p.read_bytes()).digest() for p in files)).hexdigest(),
@@ -846,7 +1143,7 @@ def main() -> int:
         result[key]["status"] == "PASS"
         for key in (
             "casefold", "privacy", "documentation", "claims",
-            "lineage", "exclusions", "rights", "manifest", "git_remote",
+            "lineage", "exclusions", "rights", "manifest", "rl02_license_notice", "git_remote",
         )
     ) else "FAIL"
     data = canonical_json(result)

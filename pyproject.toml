@@ -5,13 +5,16 @@ backend-path = ["."]
 
 [project]
 name = "triadicbrain"
-version = "0.1.0a0.dev1"
+version = "0.1.0a0.dev2"
 description = "Private, offline alpha-staging facade for bounded Triadic Brain review"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
+license = "MPL-2.0"
+license-files = ["LICENSE", "licenses/Unicode-3.0.txt"]
 classifiers = [
   "Development Status :: 2 - Pre-Alpha",
+  "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.12",
   "Operating System :: OS Independent",

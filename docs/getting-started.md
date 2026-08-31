@@ -11,7 +11,7 @@ route. It does not authorize a provider call or public redistribution.
 
 - Python 3.12.
 - A clean directory you control.
-- The supplied `triadicbrain-0.1.0a0.dev1-py3-none-any.whl`.
+- The independently reviewed local `triadicbrain-0.1.0a0.dev2-py3-none-any.whl`.
 - No Ollama installation, model download, network service, or developer checkout
   is required for the fixture demo.
 
@@ -21,14 +21,14 @@ On PowerShell:
 
 ```powershell
 py -3.12 -m venv .venv
-.venv\Scripts\python -m pip install --no-index .\triadicbrain-0.1.0a0.dev1-py3-none-any.whl
+.venv\Scripts\python -m pip install --no-index .\triadicbrain-0.1.0a0.dev2-py3-none-any.whl
 ```
 
 On a POSIX shell:
 
 ```sh
 python3.12 -m venv .venv
-.venv/bin/python -m pip install --no-index ./triadicbrain-0.1.0a0.dev1-py3-none-any.whl
+.venv/bin/python -m pip install --no-index ./triadicbrain-0.1.0a0.dev2-py3-none-any.whl
 ```
 
 `--no-index` keeps this installation offline. The wheel includes the bounded

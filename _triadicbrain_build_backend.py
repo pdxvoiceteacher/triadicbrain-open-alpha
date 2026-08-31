@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Iterable
 
 NAME = "triadicbrain"
-VERSION = "0.1.0a0.dev1"
+VERSION = "0.1.0a0.dev2"
 DIST_INFO = f"{NAME}-{VERSION}.dist-info"
 SDIST_ROOT = f"{NAME}-{VERSION}"
 WHEEL_NAME = f"{NAME}-{VERSION}-py3-none-any.whl"
@@ -26,17 +26,37 @@ INHERITED_SOURCE_ROOTS = (
     Path("components/uvlm-publications/python/src"),
 )
 EXPECTED_INHERITED_FILE_COUNT = 62
+MPL_LICENSE_SHA256 = "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04"
+UNICODE_LICENSE_SHA256 = "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
+LICENSE_FILES = (
+    ("LICENSE", MPL_LICENSE_SHA256),
+    ("licenses/Unicode-3.0.txt", UNICODE_LICENSE_SHA256),
+)
+SDIST_DOCUMENTS = (
+    "AI_ASSISTANCE_DISCLOSURE.md",
+    "CONTRIBUTORS.md",
+    "DEPENDENCIES.md",
+    "LICENSE",
+    "LICENSE_SCOPE.md",
+    "NOTICE",
+    "README.md",
+    "THIRD_PARTY_NOTICES.md",
+    "licenses/Unicode-3.0.txt",
+)
 
 
 def _metadata() -> bytes:
     return (
-        "Metadata-Version: 2.3\n"
+        "Metadata-Version: 2.4\n"
         "Name: triadicbrain\n"
-        "Version: 0.1.0a0.dev1\n"
+        "Version: 0.1.0a0.dev2\n"
         "Summary: Private, offline alpha-staging facade for bounded Triadic Brain review\n"
         "Requires-Python: >=3.12\n"
-        "License: No outbound license selected; private staging only\n"
+        "License-Expression: MPL-2.0\n"
+        "License-File: LICENSE\n"
+        "License-File: licenses/Unicode-3.0.txt\n"
         "Classifier: Development Status :: 2 - Pre-Alpha\n"
+        "Classifier: License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)\n"
         "Classifier: Programming Language :: Python :: 3.12\n"
         "Classifier: Operating System :: OS Independent\n"
         "\n"
@@ -119,6 +139,19 @@ def _package_files() -> list[tuple[str, bytes]]:
     return sorted(rows)
 
 
+def _license_files() -> list[tuple[str, bytes]]:
+    rows: list[tuple[str, bytes]] = []
+    for relative, expected_sha256 in LICENSE_FILES:
+        path = ROOT.joinpath(*relative.split("/"))
+        if path.is_symlink() or not path.is_file():
+            raise RuntimeError(f"license input unavailable: {relative}")
+        payload = path.read_bytes()
+        if hashlib.sha256(payload).hexdigest() != expected_sha256:
+            raise RuntimeError(f"license input identity mismatch: {relative}")
+        rows.append((relative, payload))
+    return rows
+
+
 def _record_hash(payload: bytes) -> str:
     digest = base64.urlsafe_b64encode(hashlib.sha256(payload).digest()).rstrip(b"=").decode("ascii")
     return f"sha256={digest}"
@@ -135,6 +168,10 @@ def _zip_info(name: str) -> zipfile.ZipInfo:
 
 def _wheel_rows() -> list[tuple[str, bytes]]:
     rows = _package_files()
+    rows.extend(
+        (f"{DIST_INFO}/licenses/{relative}", payload)
+        for relative, payload in _license_files()
+    )
     rows.extend(
         [
             (f"{DIST_INFO}/METADATA", _metadata()),
@@ -173,10 +210,11 @@ def _sdist_files() -> list[tuple[str, bytes]]:
             if path.is_symlink() or not path.is_file():
                 raise RuntimeError("test source topology invalid")
             rows.append((path.relative_to(ROOT).as_posix(), path.read_bytes()))
-    for optional in ("README.md", "LICENSE_NOT_YET_SELECTED.md"):
-        path = ROOT / optional
-        if path.is_file() and not path.is_symlink():
-            rows.append((optional, path.read_bytes()))
+    for relative in SDIST_DOCUMENTS:
+        path = ROOT.joinpath(*relative.split("/"))
+        if path.is_symlink() or not path.is_file():
+            raise RuntimeError(f"sdist document unavailable: {relative}")
+        rows.append((relative, path.read_bytes()))
     rows.append(("PKG-INFO", _metadata()))
     return sorted(rows)
 
