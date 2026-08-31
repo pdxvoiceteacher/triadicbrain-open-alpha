@@ -19,6 +19,15 @@ MPL_SHA256 = "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04"
 UNICODE_SHA256 = "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
 UCD_SHA256 = "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08"
 DEMO_SHA256 = "ed2ab14592d7c62a6e82658207680b56246f8c4126bbc0a8f94b3ae83d61202f"
+LICENSE_EXPRESSION = "MPL-2.0 AND Unicode-3.0"
+EXPECTED_RIGHTS_POSTURE = {
+    "candidate_review_status": "PENDING_INDEPENDENT_REVIEW",
+    "outbound_license_selected": True,
+    "primary_license": "MPL-2.0",
+    "public_release_eligible": False,
+    "status": "HOLD",
+    "third_party_licenses": ["Unicode-3.0"],
+}
 ACTION_PINS = {
     "actions/checkout": "11d5960a326750d5838078e36cf38b85af677262",
     "actions/setup-python": "a26af69be951a213d495a4c3e4e4022e16d87065",
@@ -77,7 +86,7 @@ class RootPackageTests(unittest.TestCase):
         report = doctor_report()
         self.assertEqual(report["schema_id"], "uvlm.triadicbrain.doctor_report.v1")
         self.assertTrue(report["python"]["compatible"])
-        self.assertFalse(report["rights_posture"]["public_release_eligible"])
+        self.assertEqual(report["rights_posture"], EXPECTED_RIGHTS_POSTURE)
         self.assertFalse(report["optional_ollama"]["provider_contacted"])
         self.assertTrue(all(value is False for value in report["side_effects"].values()))
 
@@ -193,6 +202,79 @@ class RootPackageTests(unittest.TestCase):
         self.assertIn("not legal contributors", contributors)
         self.assertIn("oa01@local.invalid", contributors)
 
+    def test_rl02_repair01_active_license_posture_is_consistent(self) -> None:
+        active_posture_paths = (
+            "AGENTS.md",
+            "README.md",
+            "LICENSE_SCOPE.md",
+            "NOTICE",
+            "THIRD_PARTY_NOTICES.md",
+            "DEPENDENCIES.md",
+            "AI_ASSISTANCE_DISCLOSURE.md",
+            "CONTRIBUTORS.md",
+            "docs/getting-started.md",
+            "docs/roadmap.md",
+            "docs/safety-and-boundaries.md",
+            "docs/whitepaper/index.md",
+            "PUBLIC_CLAIM_LEDGER.csv",
+            "PUBLIC_PROJECTION_MANIFEST.json",
+            "pyproject.toml",
+            "_triadicbrain_build_backend.py",
+            "src/triadicbrain/doctor.py",
+            "tools/run_private_alpha_ci.py",
+        )
+        forbidden = (
+            "LICENSE_NOT_YET_SELECTED.md",
+            "select an outbound license",
+            "Selection of an outbound license",
+            "outbound-license selection",
+            "0.1.0a0.dev2",
+            "v0.1.0-alpha.0-private.3-rc1",
+            "License :: OSI Approved :: Mozilla Public License 2.0",
+        )
+        for relative in active_posture_paths:
+            text = (ROOT / relative).read_text(encoding="utf-8")
+            for fragment in forbidden:
+                if (
+                    relative == "tools/run_private_alpha_ci.py"
+                    and fragment == "License :: OSI Approved :: Mozilla Public License 2.0"
+                ):
+                    continue
+                self.assertNotIn(fragment, text, f"{relative}: {fragment}")
+
+        manifest = json.loads((ROOT / "PUBLIC_PROJECTION_MANIFEST.json").read_bytes())
+        self.assertEqual(manifest["candidate_label"], "v0.1.0-alpha.0-private.3-rc2")
+        self.assertEqual(manifest["python_distribution_version"], "0.1.0a0.dev3")
+        self.assertEqual(manifest["outbound_license"], LICENSE_EXPRESSION)
+        self.assertEqual(manifest["primary_license"], "MPL-2.0")
+        self.assertEqual(manifest["third_party_licenses"], ["Unicode-3.0"])
+        self.assertTrue(manifest["outbound_license_selected"])
+        self.assertFalse(manifest["public_release_eligible"])
+        self.assertEqual(manifest["rights_hold_count"], 158)
+        self.assertEqual(manifest["rights_clear_count"], 0)
+
+        with (ROOT / "PUBLIC_CLAIM_LEDGER.csv").open(encoding="utf-8", newline="") as handle:
+            claims = {row["claim_id"]: row for row in csv.DictReader(handle)}
+        release_claim = claims["CLM-015"]
+        self.assertEqual(release_claim["status"], "DEFERRED")
+        self.assertEqual(release_claim["public_status"], "HOLD")
+        self.assertNotIn("LICENSE_NOT_YET_SELECTED.md", release_claim["evidence_reference"])
+        for token in ("RIGHTS_EVIDENCE_MATRIX.csv", "LICENSE", "LICENSE_SCOPE.md", "THIRD_PARTY_NOTICES.md"):
+            self.assertIn(token, release_claim["evidence_reference"])
+
+        for name, path_field in (
+            ("EXCLUDED_PATHS.csv", "source_path"),
+            ("PROJECTION_LINEAGE.csv", "projected_path"),
+            ("RIGHTS_EVIDENCE_MATRIX.csv", "path"),
+        ):
+            with (ROOT / name).open(encoding="utf-8", newline="") as handle:
+                matches = [
+                    row for row in csv.DictReader(handle)
+                    if row[path_field] == "LICENSE_NOT_YET_SELECTED.md"
+                ]
+            self.assertEqual(len(matches), 1, name)
+            self.assertEqual(matches[0]["record_status"], "RETIRED", name)
+
     def test_canonical_parser_rejects_duplicates_and_noncanonical_json(self) -> None:
         with self.assertRaises(ContractError):
             parse_canonical_object(b'{"a":1,"a":2}\n', "duplicate")
@@ -226,7 +308,8 @@ class BuildBackendTests(unittest.TestCase):
                 metadata = archive.read(f"{backend.DIST_INFO}/METADATA")
                 self.assertNotIn(b"Requires-Dist:", metadata)
                 self.assertIn(b"Metadata-Version: 2.4\n", metadata)
-                self.assertIn(b"License-Expression: MPL-2.0\n", metadata)
+                self.assertIn(f"License-Expression: {LICENSE_EXPRESSION}\n".encode(), metadata)
+                self.assertNotIn(b"Classifier: License :: OSI Approved :: Mozilla Public License 2.0", metadata)
                 self.assertIn(b"License-File: LICENSE\n", metadata)
                 self.assertIn(b"License-File: licenses/Unicode-3.0.txt\n", metadata)
                 mpl_member = f"{backend.DIST_INFO}/licenses/LICENSE"
@@ -252,6 +335,12 @@ class BuildBackendTests(unittest.TestCase):
                     f"{backend.SDIST_ROOT}/components/Sophia/python/src/sophia/triadic/totality_audit.py",
                     names,
                 )
+                pkg_info = archive.extractfile(f"{backend.SDIST_ROOT}/PKG-INFO")
+                self.assertIsNotNone(pkg_info)
+                metadata = pkg_info.read()
+                self.assertIn(b"Metadata-Version: 2.4\n", metadata)
+                self.assertIn(f"License-Expression: {LICENSE_EXPRESSION}\n".encode(), metadata)
+                self.assertNotIn(b"Classifier: License :: OSI Approved :: Mozilla Public License 2.0", metadata)
             self.assertEqual(hashlib.sha256(wa.read_bytes()).hexdigest(), hashlib.sha256(wb.read_bytes()).hexdigest())
 
     def test_pyproject_has_no_build_or_runtime_dependencies(self) -> None:
@@ -260,9 +349,13 @@ class BuildBackendTests(unittest.TestCase):
         project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
         self.assertEqual(project["build-system"]["requires"], [])
         self.assertEqual(project["project"]["dependencies"], [])
-        self.assertEqual(project["project"]["version"], "0.1.0a0.dev2")
-        self.assertEqual(project["project"]["license"], "MPL-2.0")
+        self.assertEqual(project["project"]["version"], "0.1.0a0.dev3")
+        self.assertEqual(project["project"]["license"], LICENSE_EXPRESSION)
         self.assertEqual(project["project"]["license-files"], ["LICENSE", "licenses/Unicode-3.0.txt"])
+        self.assertNotIn(
+            "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+            project["project"]["classifiers"],
+        )
         self.assertEqual(project["project"]["scripts"]["triadicbrain"], "triadicbrain.cli:main")
 
 

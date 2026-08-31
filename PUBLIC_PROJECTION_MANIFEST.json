@@ -9,7 +9,8 @@
     ".github/workflows/private-alpha-ci.yml"
   ],
   "authority_effect": "NONE",
-  "candidate_label": "v0.1.0-alpha.0-private.3-rc1",
+  "candidate_label": "v0.1.0-alpha.0-private.3-rc2",
+  "candidate_review_status": "PENDING_INDEPENDENT_REVIEW",
   "excluded_active_count": 8418,
   "excluded_retired_count": 2,
   "excluded_source_count": 8420,
@@ -22,10 +23,12 @@
   "merge_base": "308c5af03f9cf0cc4cbb3f2eb4d269ecca310ddd",
   "modified_inherited_count": 7,
   "mpl_license_sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
-  "outbound_license": "MPL-2.0 with Unicode License V3 exception",
+  "outbound_license": "MPL-2.0 AND Unicode-3.0",
+  "outbound_license_selected": true,
+  "primary_license": "MPL-2.0",
   "public_release": false,
   "public_release_eligible": false,
-  "python_distribution_version": "0.1.0a0.dev2",
+  "python_distribution_version": "0.1.0a0.dev3",
   "record_status_values": [
     "ACTIVE",
     "RETIRED"
@@ -39,8 +42,8 @@
     ".github/workflows/triadicgate-ci.yml"
   ],
   "reviewed_base": {
-    "commit": "b278378f5add312aa8fb81a6cc1e0dc5fccc49aa",
-    "tree": "aefe9503e8f0ede0d7d5ab3de9f93a8e25a3668e"
+    "commit": "0a269a739834944985e20273d6ee2e716d876ae2",
+    "tree": "a5c1e097a41a5adee415785a3c010318ab2d8e9a"
   },
   "reviewed_baseline_tag": "v0.1.0-alpha.0-private.1",
   "rights_active_count": 156,
@@ -53,10 +56,13 @@
   "source_commit": "a3b306f6df40fc9862f2494f5048bd604ceafce0",
   "source_parent": "715292b6c18755b0e6de35f90b2648fdeab7332b",
   "source_tree": "49844480c4e826a28b51362d4f5abe714e6b9a5a",
-  "successor_branch": "rights-license/mpl-unicode-notices-01",
+  "successor_branch": "rights-license/mpl-unicode-notices-01-repair01",
   "superseded_workflows": [
     ".github/workflows/oa01-linux-python312.yml",
     ".github/workflows/oa01-windows-python312.yml"
+  ],
+  "third_party_licenses": [
+    "Unicode-3.0"
   ],
   "triadicgate_workflow_retirement_reason": "RETIRED_INAPPLICABLE_UPSTREAM_INTEGRATION_WORKFLOW",
   "unchanged_inherited_count": 98,

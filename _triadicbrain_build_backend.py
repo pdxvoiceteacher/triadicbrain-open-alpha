@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Iterable
 
 NAME = "triadicbrain"
-VERSION = "0.1.0a0.dev2"
+VERSION = "0.1.0a0.dev3"
 DIST_INFO = f"{NAME}-{VERSION}.dist-info"
 SDIST_ROOT = f"{NAME}-{VERSION}"
 WHEEL_NAME = f"{NAME}-{VERSION}-py3-none-any.whl"
@@ -49,14 +49,13 @@ def _metadata() -> bytes:
     return (
         "Metadata-Version: 2.4\n"
         "Name: triadicbrain\n"
-        "Version: 0.1.0a0.dev2\n"
+        "Version: 0.1.0a0.dev3\n"
         "Summary: Private, offline alpha-staging facade for bounded Triadic Brain review\n"
         "Requires-Python: >=3.12\n"
-        "License-Expression: MPL-2.0\n"
+        "License-Expression: MPL-2.0 AND Unicode-3.0\n"
         "License-File: LICENSE\n"
         "License-File: licenses/Unicode-3.0.txt\n"
         "Classifier: Development Status :: 2 - Pre-Alpha\n"
-        "Classifier: License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)\n"
         "Classifier: Programming Language :: Python :: 3.12\n"
         "Classifier: Operating System :: OS Independent\n"
         "\n"

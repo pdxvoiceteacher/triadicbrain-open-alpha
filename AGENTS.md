@@ -2,10 +2,13 @@
 
 This repository is the private Triadic Brain alpha-staging successor for bounded
 internal development and review. Private staging does not clear any rights HOLD,
-authorize public distribution or release, select an outbound license, or grant
-provider, publication, deployment, or memory-write authority. Nested component
-instructions remain binding, and a task may modify only components explicitly named
-in scope.
+authorize public distribution or release, or grant provider, publication,
+deployment, or memory-write authority. The operative human decision selected
+MPL-2.0 as the primary private-candidate license, while Unicode-3.0 applies to
+the embedded Unicode data. That candidate license selection does not clear any
+of the 158 rights HOLD rows or authorize public distribution. Nested component
+instructions remain binding, and a task may modify only components explicitly
+named in scope.
 
 ## Source precedence
 

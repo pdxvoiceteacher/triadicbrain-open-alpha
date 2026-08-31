@@ -24,13 +24,14 @@ TEXT_SUFFIXES = {
 REPOSITORY_MODES = {"local-source-candidate", "private-github"}
 RECORD_STATUSES = {"ACTIVE", "RETIRED"}
 EXPECTED_PRIVATE_ORIGIN = "pdxvoiceteacher/triadicbrain-open-alpha"
-EXPECTED_SUCCESSOR_BRANCH = "rights-license/mpl-unicode-notices-01"
-EXPECTED_CANDIDATE_LABEL = "v0.1.0-alpha.0-private.3-rc1"
+EXPECTED_SUCCESSOR_BRANCH = "rights-license/mpl-unicode-notices-01-repair01"
+EXPECTED_CANDIDATE_LABEL = "v0.1.0-alpha.0-private.3-rc2"
 EXPECTED_BASELINE_TAG = "v0.1.0-alpha.0-private.1"
 EXPECTED_BASELINE = {
-    "commit": "b278378f5add312aa8fb81a6cc1e0dc5fccc49aa",
-    "tree": "aefe9503e8f0ede0d7d5ab3de9f93a8e25a3668e",
+    "commit": "0a269a739834944985e20273d6ee2e716d876ae2",
+    "tree": "a5c1e097a41a5adee415785a3c010318ab2d8e9a",
 }
+ORIGINAL_RL02_BASE_COMMIT = "b278378f5add312aa8fb81a6cc1e0dc5fccc49aa"
 EXPECTED_ACTIVE_WORKFLOWS = [".github/workflows/private-alpha-ci.yml"]
 EXPECTED_RETIRED_WORKFLOWS = [".github/workflows/triadicgate-ci.yml"]
 EXPECTED_SUPERSEDED_WORKFLOWS = [
@@ -94,40 +95,27 @@ MPL_MARKED_PATHS = {
     "components/CoherenceLattice/python/src/coherence/totality/waveform.py",
 }
 CHANGED_PATH_CLASSIFICATIONS = {
-    "LICENSE": "LICENSE_TEXT",
-    "licenses/Unicode-3.0.txt": "LICENSE_TEXT",
-    "NOTICE": "THIRD_PARTY_NOTICE",
-    "THIRD_PARTY_NOTICES.md": "THIRD_PARTY_NOTICE",
-    **{path: "THIRD_PARTY_NOTICE" for path in UNICODE_PATHS},
-    "AI_ASSISTANCE_DISCLOSURE.md": "DISCLOSURE",
-    "CONTRIBUTORS.md": "DISCLOSURE",
-    "DEPENDENCIES.md": "DISCLOSURE",
-    "components/CoherenceLattice/README.md": "AMBIGUOUS_NOTICE_REPLACEMENT",
-    "LICENSE_NOT_YET_SELECTED.md": "AMBIGUOUS_NOTICE_REPLACEMENT",
-    "pyproject.toml": "PACKAGE_METADATA",
-    "_triadicbrain_build_backend.py": "DETERMINISTIC_PACKAGING",
-    ".github/workflows/private-alpha-ci.yml": "ACTION_PIN",
-    "tools/oa01_validate.py": "VALIDATOR_OR_TEST",
-    "tools/run_private_alpha_ci.py": "VALIDATOR_OR_TEST",
-    "tests/test_root_package.py": "VALIDATOR_OR_TEST",
-    "tools/write_projection_records.py": "RIGHTS_OR_LINEAGE_RECORD",
-    "PROJECTION_LINEAGE.csv": "RIGHTS_OR_LINEAGE_RECORD",
-    "EXCLUDED_PATHS.csv": "RIGHTS_OR_LINEAGE_RECORD",
-    "REPLACED_PATHS.csv": "RIGHTS_OR_LINEAGE_RECORD",
-    "RIGHTS_EVIDENCE_MATRIX.csv": "RIGHTS_OR_LINEAGE_RECORD",
+    "AGENTS.md": "BINDING_GOVERNANCE",
+    "PUBLIC_CLAIM_LEDGER.csv": "CLAIM_LEDGER",
     "PUBLIC_PROJECTION_MANIFEST.json": "RIGHTS_OR_LINEAGE_RECORD",
-    "THIRD_PARTY_SNIPPET_AND_LICENSE_FINDINGS.csv": "RIGHTS_OR_LINEAGE_RECORD",
-    "LICENSE_SCOPE.md": "VERSION_OR_STATUS_DOCUMENT",
-    "README.md": "VERSION_OR_STATUS_DOCUMENT",
-    "CONTRIBUTING.md": "VERSION_OR_STATUS_DOCUMENT",
-    "LICENSE_DECISION_MEMO.md": "VERSION_OR_STATUS_DOCUMENT",
-    "HUMAN_RIGHTS_ATTESTATION_REQUIRED.md": "VERSION_OR_STATUS_DOCUMENT",
-    "NOTICE_REPAIR_PLAN.md": "VERSION_OR_STATUS_DOCUMENT",
-    "docs/getting-started.md": "VERSION_OR_STATUS_DOCUMENT",
-    "src/triadicbrain/__init__.py": "VERSION_OR_STATUS_DOCUMENT",
+    "PROJECTION_LINEAGE.csv": "RIGHTS_OR_LINEAGE_RECORD",
+    "README.md": "ACTIVE_DOCUMENTATION",
+    "RIGHTS_EVIDENCE_MATRIX.csv": "RIGHTS_OR_LINEAGE_RECORD",
+    "_triadicbrain_build_backend.py": "LICENSE_METADATA",
+    "docs/getting-started.md": "ACTIVE_DOCUMENTATION",
+    "docs/roadmap.md": "ACTIVE_DOCUMENTATION",
+    "docs/safety-and-boundaries.md": "ACTIVE_DOCUMENTATION",
+    "docs/whitepaper/index.md": "ACTIVE_DOCUMENTATION",
+    "pyproject.toml": "LICENSE_METADATA",
+    "src/triadicbrain/__init__.py": "VERSION_IDENTITY",
+    "src/triadicbrain/doctor.py": "RUNTIME_STATUS_REPORT",
+    "tests/test_root_package.py": "CI_OR_TEST",
+    "tools/oa01_validate.py": "CI_OR_TEST",
+    "tools/run_private_alpha_ci.py": "CI_OR_TEST",
+    "tools/write_projection_records.py": "RIGHTS_OR_LINEAGE_RECORD",
 }
-if len(CHANGED_PATH_CLASSIFICATIONS) != 36:
-    raise RuntimeError("RL-02 changed-path classification count mismatch")
+if len(CHANGED_PATH_CLASSIFICATIONS) != 18:
+    raise RuntimeError("RL-02 Repair01 changed-path classification count mismatch")
 WINDOWS_REPARSE_ATTRIBUTE = 0x400
 
 
@@ -856,8 +844,12 @@ def check_manifest(
         "human_authority_effect": "RIGHTS_AND_LICENSE_IMPLEMENTATION_CANDIDATE_ONLY",
         "public_release": False,
         "public_release_eligible": False,
-        "outbound_license": "MPL-2.0 with Unicode License V3 exception",
-        "python_distribution_version": "0.1.0a0.dev2",
+        "candidate_review_status": "PENDING_INDEPENDENT_REVIEW",
+        "outbound_license": "MPL-2.0 AND Unicode-3.0",
+        "outbound_license_selected": True,
+        "primary_license": "MPL-2.0",
+        "python_distribution_version": "0.1.0a0.dev3",
+        "third_party_licenses": ["Unicode-3.0"],
         "mpl_license_sha256": MPL_LICENSE_SHA256,
         "unicode_license_sha256": UNICODE_LICENSE_SHA256,
         "unicode_ucd_source_sha256": UNICODE_SOURCE_SHA256,
@@ -1051,13 +1043,83 @@ def check_rl02_surface(root: Path) -> dict[str, object]:
         if token not in disclosure_text:
             errors.append(f"AI disclosure token missing: {token}")
 
+    active_posture_paths = (
+        "AGENTS.md",
+        "README.md",
+        "docs/getting-started.md",
+        "docs/roadmap.md",
+        "docs/safety-and-boundaries.md",
+        "docs/whitepaper/index.md",
+        "PUBLIC_CLAIM_LEDGER.csv",
+        "PUBLIC_PROJECTION_MANIFEST.json",
+        "pyproject.toml",
+        "_triadicbrain_build_backend.py",
+        "src/triadicbrain/doctor.py",
+        "tools/run_private_alpha_ci.py",
+    )
+    forbidden_posture_fragments = (
+        "license_not_yet_selected.md",
+        "select an outbound license",
+        "selection of an outbound license",
+        "outbound-license selection",
+        "0.1.0a0.dev2",
+        "v0.1.0-alpha.0-private.3-rc1",
+        "license :: osi approved :: mozilla public license 2.0",
+    )
+    stale_posture: list[dict[str, str]] = []
+    for relative_name in active_posture_paths:
+        text = (root / relative_name).read_text(encoding="utf-8").casefold()
+        for fragment in forbidden_posture_fragments:
+            if (
+                relative_name == "tools/run_private_alpha_ci.py"
+                and fragment == "license :: osi approved :: mozilla public license 2.0"
+            ):
+                continue
+            if fragment.casefold() in text:
+                stale_posture.append({"path": relative_name, "fragment": fragment})
+                errors.append(f"stale active license posture: {relative_name}: {fragment}")
+
+    with (root / "PUBLIC_CLAIM_LEDGER.csv").open(encoding="utf-8", newline="") as handle:
+        claim_rows = {row["claim_id"]: row for row in csv.DictReader(handle)}
+    release_claim = claim_rows.get("CLM-015", {})
+    required_claim_evidence = {
+        "RIGHTS_EVIDENCE_MATRIX.csv", "LICENSE", "LICENSE_SCOPE.md",
+        "THIRD_PARTY_NOTICES.md", "AI_ASSISTANCE_DISCLOSURE.md",
+    }
+    observed_claim_evidence = {
+        token.strip() for token in release_claim.get("evidence_reference", "").split(";") if token.strip()
+    }
+    if (
+        release_claim.get("status") != "DEFERRED"
+        or release_claim.get("public_status") != "HOLD"
+        or observed_claim_evidence != required_claim_evidence
+        or "158 rights rows remain HOLD" not in release_claim.get("limitation", "")
+        or "public release is not authorized" not in release_claim.get("limitation", "")
+    ):
+        errors.append("CLM-015 selected-license HOLD posture mismatch")
+
+    doctor_text = (root / "src" / "triadicbrain" / "doctor.py").read_text(encoding="utf-8")
+    for token in (
+        '"candidate_review_status": "PENDING_INDEPENDENT_REVIEW"',
+        '"outbound_license_selected": True',
+        '"primary_license": "MPL-2.0"',
+        '"public_release_eligible": False',
+        '"status": "HOLD"',
+        '"third_party_licenses": ["Unicode-3.0"]',
+    ):
+        if token not in doctor_text:
+            errors.append(f"doctor posture token missing: {token}")
+
     pyproject_text = (root / "pyproject.toml").read_text(encoding="utf-8")
     for token in (
-        'version = "0.1.0a0.dev2"', "dependencies = []", 'license = "MPL-2.0"',
+        'version = "0.1.0a0.dev3"', "dependencies = []",
+        'license = "MPL-2.0 AND Unicode-3.0"',
         'license-files = ["LICENSE", "licenses/Unicode-3.0.txt"]',
     ):
         if token not in pyproject_text:
             errors.append(f"project metadata token missing: {token}")
+    if "License :: OSI Approved :: Mozilla Public License 2.0" in pyproject_text:
+        errors.append("deprecated MPL license classifier remains present")
     component_readme = (root / "components" / "CoherenceLattice" / "README.md").read_text(encoding="utf-8")
     if "and collaborators" in component_readme.casefold() or len(component_readme.encode("utf-8")) > 6000:
         errors.append("bounded CoherenceLattice README contract mismatch")
@@ -1069,6 +1131,7 @@ def check_rl02_surface(root: Path) -> dict[str, object]:
         check=False,
     )
     changed: set[str] | None = None
+    cumulative: set[str] | None = None
     if base_probe.returncode == 0:
         try:
             changed = set(git_lines(root, "diff", "--name-only", EXPECTED_BASELINE["commit"], "--"))
@@ -1077,18 +1140,35 @@ def check_rl02_surface(root: Path) -> dict[str, object]:
         except (OSError, subprocess.SubprocessError):
             errors.append("RL-02 changed surface unavailable")
         if changed is not None and changed != set(CHANGED_PATH_CLASSIFICATIONS):
-            errors.append("RL-02 changed path ceiling or classification mismatch")
+            errors.append("RL-02 Repair01 changed path ceiling or classification mismatch")
+        original_probe = subprocess.run(
+            ["git", "-C", str(root), "cat-file", "-e", f"{ORIGINAL_RL02_BASE_COMMIT}^{{commit}}"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        if original_probe.returncode == 0:
+            try:
+                cumulative = set(git_lines(root, "diff", "--name-only", ORIGINAL_RL02_BASE_COMMIT, "--"))
+                cumulative.update(git_lines(root, "ls-files", "--others", "--exclude-standard"))
+                cumulative = {path.replace("\\", "/") for path in cumulative}
+            except (OSError, subprocess.SubprocessError):
+                errors.append("cumulative RL-02 changed surface unavailable")
+            if cumulative is not None and len(cumulative) != 42:
+                errors.append("cumulative RL-02 changed path preservation mismatch")
 
     return {
         "status": "PASS" if not errors else "FAIL",
         "license_sha256": hashes,
         "unicode_ranges": range_results,
         "action_pins": uses_rows,
-        "changed_path_count": len(changed) if changed is not None else 36,
+        "changed_path_count": len(changed) if changed is not None else 18,
+        "cumulative_changed_path_count": len(cumulative) if cumulative is not None else 42,
         "changed_surface_basis": "BASE_COMMIT_DIFF" if changed is not None else "CANONICAL_COMMITTED_FIXTURE",
         "changed_path_classifications": {
             path: CHANGED_PATH_CLASSIFICATIONS[path] for path in sorted(CHANGED_PATH_CLASSIFICATIONS)
         },
+        "stale_active_posture_findings": stale_posture,
         "errors": errors,
     }
 

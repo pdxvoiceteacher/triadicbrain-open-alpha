@@ -42,7 +42,7 @@ Use Python 3.12 and an independently reviewed local wheel:
 
 ```powershell
 py -3.12 -m venv .venv
-.venv\Scripts\python -m pip install --no-index .\triadicbrain-0.1.0a0.dev2-py3-none-any.whl
+.venv\Scripts\python -m pip install --no-index .\triadicbrain-0.1.0a0.dev3-py3-none-any.whl
 .venv\Scripts\triadicbrain doctor
 .venv\Scripts\triadicbrain demo --output .\review-run
 .venv\Scripts\triadicbrain serve --run-root .\review-run
