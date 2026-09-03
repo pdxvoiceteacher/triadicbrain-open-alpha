@@ -5,8 +5,8 @@ backend-path = ["."]
 
 [project]
 name = "triadicbrain"
-version = "0.1.0a0.dev3"
-description = "Private, offline alpha-staging facade for bounded Triadic Brain review"
+version = "0.1.0a0.dev4"
+description = "Public development alpha for bounded, local-first Triadic Brain review"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
@@ -28,3 +28,9 @@ public-release-eligible = false
 rights-status = "HOLD"
 provider-policy = "DENY"
 network-policy = "LOOPBACK_SERVE_ONLY"
+distribution-status = "PUBLIC_DEVELOPMENT_NO_FORMAL_RELEASE"
+repository-visibility = "PUBLIC"
+source-publicly-available = true
+formal-release-created = false
+package-published = false
+pages-enabled = false
