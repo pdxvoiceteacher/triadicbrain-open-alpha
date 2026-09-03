@@ -1,17 +1,18 @@
 # Getting started
 
-**[IMPLEMENTED] Private, offline fixture path**  
-**Public status: HOLD · Authority effect: NONE**
+**[IMPLEMENTED] Public-development, offline fixture path**
+**Formal release: NONE · Rights: HOLD · Authority effect: NONE**
 
-This guide uses only the supplied private candidate and its deterministic
-contract fixture. The demo does not invoke the inherited Coherence/Sophia/Atlas
-route. It does not authorize a provider call or public redistribution.
+This guide uses the public development candidate and its deterministic contract
+fixture. The demo does not invoke the inherited Coherence/Sophia/Atlas route or
+a model provider. Public source availability is not a formal GitHub Release,
+published package, hosted service, or production deployment.
 
 ## Prerequisites
 
 - Python 3.12.
 - A clean directory you control.
-- The independently reviewed local `triadicbrain-0.1.0a0.dev3-py3-none-any.whl`.
+- An independently reviewed local `triadicbrain-0.1.0a0.dev4-py3-none-any.whl`.
 - No Ollama installation, model download, network service, or developer checkout
   is required for the fixture demo.
 
@@ -21,14 +22,14 @@ On PowerShell:
 
 ```powershell
 py -3.12 -m venv .venv
-.venv\Scripts\python -m pip install --no-index .\triadicbrain-0.1.0a0.dev3-py3-none-any.whl
+.venv\Scripts\python -m pip install --no-index --no-deps .\triadicbrain-0.1.0a0.dev4-py3-none-any.whl
 ```
 
 On a POSIX shell:
 
 ```sh
 python3.12 -m venv .venv
-.venv/bin/python -m pip install --no-index ./triadicbrain-0.1.0a0.dev3-py3-none-any.whl
+.venv/bin/python -m pip install --no-index --no-deps ./triadicbrain-0.1.0a0.dev4-py3-none-any.whl
 ```
 
 `--no-index` keeps this installation offline. The wheel includes the bounded
@@ -50,7 +51,7 @@ posture. It must not start a daemon, contact a non-loopback host, download a
 model, edit PATH or the registry, or change the machine.
 
 Optional Ollama discovery is a local observation only. It is not a provider
-test, and OA-01 does not authorize invoking Ollama.
+test, and this public-development route does not authorize invoking Ollama.
 
 ## Run the deterministic demo
 
@@ -64,17 +65,29 @@ artifacts described in the [output guide](output-guide.md). Repeat the command
 with a second empty directory to compare deterministic output bytes. Passing
 that comparison is not evidence that the inherited product route was invoked.
 
-## Start the local review surface
+## Run the guided investor demonstration
+
+```powershell
+.venv\Scripts\triadicbrain investor-demo --output .\review-run-investor --open-browser
+```
+
+Use a new output path. The command runs the same read-only doctor checks,
+creates the deterministic fixture, prints a concise status block, and starts
+the foreground loopback server. Browser opening occurs only when
+`--open-browser` is present. See the [investor demonstration](investor-demo.md)
+and [operator runbook](operator-runbook.md).
+
+## Start the local review surface manually
 
 ```powershell
 .venv\Scripts\triadicbrain serve --run-root .\review-run
 ```
 
 The server runs in the foreground and binds only to a loopback address by
-default. Open `http://127.0.0.1:8765/review`, review the fixture, and press
-`Ctrl+C` to stop. Requests with non-loopback Host or Origin conditions are
-refused.
+default. Open `http://127.0.0.1:8765/review`, inspect the canonical read-only
+`/status` endpoint, review the fixture, and press `Ctrl+C` to stop. Requests
+with non-loopback Host or Origin conditions are refused.
 
-The OA-01 interface is read-only: it does not submit a human decision, publish,
-deploy, write memory, or make the decision for you. Continue with
+The root interface is read-only: it does not submit a human decision, publish a
+package, deploy, write memory, or make the decision for you. Continue with
 [Your first review](first-review.md).

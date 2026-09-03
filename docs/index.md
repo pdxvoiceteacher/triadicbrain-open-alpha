@@ -1,6 +1,6 @@
 # Triadic Brain documentation
 
-**Status: PRIVATE ALPHA STAGING · PUBLIC RIGHTS HOLD · AUTHORITY EFFECT: NONE**
+**Status: PUBLIC DEVELOPMENT ALPHA · NO FORMAL RELEASE · RIGHTS HOLD · AUTHORITY EFFECT: NONE**
 
 Triadic Brain is a local review workflow for keeping source evidence, a
 candidate, an independent audit, a bounded orientation, and a person's decision
@@ -12,15 +12,20 @@ this alpha.
 
 ## Ordinary-reader path
 
-1. [Getting started](getting-started.md) — install the private wheel and run
+1. [Public development status](../PUBLIC_DEVELOPMENT_STATUS.md) — distinguish
+   public source from a formal release, package publication, or hosted service.
+2. [Getting started](getting-started.md) — install a reviewed wheel and run
    read-only checks.
-2. [Your first review](first-review.md) — follow the deterministic fixture from
+3. [Investor demonstration](investor-demo.md) — run the guided deterministic
+   fixture with truthful capability boundaries.
+4. [Your first review](first-review.md) — follow the deterministic fixture from
    task to human decision.
-3. [Output guide](output-guide.md) — understand the artifact families and what
+5. [Output guide](output-guide.md) — understand the artifact families and what
    they do not prove.
-4. [Safety and boundaries](safety-and-boundaries.md) — see the authority,
+6. [Safety and boundaries](safety-and-boundaries.md) — see the authority,
    network, provider, memory, and release limits.
-5. [Roadmap](roadmap.md) — distinguish this private candidate from future work.
+7. [Roadmap](roadmap.md) — distinguish this development candidate from future
+   work.
 
 ## Longer-form material
 
@@ -30,6 +35,14 @@ this alpha.
   validation surfaces.
 - [Research index](research/index.md): clearly labeled research questions and
   deferred material that is not an ordinary-workflow claim.
+- [Operator runbook](operator-runbook.md): reviewed installation, doctor,
+  fixture, loopback server, and `/status` procedures.
+- [Investor one-page](investor-one-page.md) and [status matrix](status-matrix.md):
+  compact product and capability boundaries.
+- [Website front matter](website-front-matter.md): approved public-development
+  wording for a future separately governed website update.
+- [RL-02 Repair01 closure](evidence/rl02-repair01-main-closure.md): exact
+  post-merge engineering identities and CI evidence.
 
 ## Status vocabulary
 
@@ -40,8 +53,9 @@ Every material claim in this documentation uses one of these labels:
   the review handoff for the exact environment and result.
 - **PROPOSED** — a bounded design or future validation target, not current proof.
 - **RESEARCH** — an investigation topic, not a product capability.
-- **DEFERRED** — intentionally outside OA-01.
+- **DEFERRED** — intentionally outside the current public-development candidate.
 
 The machine-readable claim inventory is
-[`PUBLIC_CLAIM_LEDGER.csv`](../PUBLIC_CLAIM_LEDGER.csv). A status label is not a
-rights grant, truth certificate, publication authorization, or release approval.
+[`PUBLIC_CLAIM_LEDGER.csv`](../PUBLIC_CLAIM_LEDGER.csv). A status label does not
+replace applicable license terms and is not a truth certificate, publication
+authorization, or formal-release approval.

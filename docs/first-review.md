@@ -1,7 +1,7 @@
 # Your first review
 
 **[IMPLEMENTED] A bounded review sequence**  
-**Public status: HOLD · Authority effect: NONE**
+**Repository source: PUBLIC DEVELOPMENT · Formal release: NONE · Rights: HOLD · Authority effect: NONE**
 
 The included demo is deliberately small and deterministic. It demonstrates the
 artifact contract without invoking the inherited component route. Its purpose
@@ -46,7 +46,7 @@ is not a correctness guarantee.
 ## 6. Preserve the human decision boundary
 
 The fixture lists the bounded choices approve, hold, reject, or request repair,
-but the OA-01 local page is intentionally read-only and leaves the decision
+but the root public-development page is intentionally read-only and leaves the decision
 `PENDING`. If a later authorized workflow records a person's choice and reason,
 keep that record separate and checksum-bound. It must not be overwritten by
 Sonya/Coherence, Sophia, Atlas, or a replay.

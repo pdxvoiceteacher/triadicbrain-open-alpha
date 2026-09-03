@@ -1,12 +1,12 @@
 # Human rights decision and remaining review gate
 
-**Operative decision:** approved for one private RL-02 implementation candidate
+**Operative decision:** MPL-2.0/Unicode-3.0 posture approved for the RL-02 implementation candidate
 
-**Candidate posture:** pending independent review
+**Current posture:** public development source; no formal release
 
-**Rights rows:** all remain HOLD
+**Rights rows:** 0 CLEAR / 166 HOLD
 
-**Public release:** FALSE
+**Formal release:** FALSE
 **Runtime authority effect:** NONE
 
 Thomas Prislac approved the exact RL-01 Group A and Group D schedules, reconciled
@@ -15,14 +15,15 @@ selected MPL-2.0 for UVLM-controlled and otherwise licensable material, and
 required the Unicode License V3 exception and AI-assistance disclosure. The
 operative receipt is identified in [LICENSE_DECISION_MEMO.md](LICENSE_DECISION_MEMO.md).
 
-The decision authorizes implementation, not a public release. Git history,
-repository ownership, hashes, and a license selection remain evidence rather
-than proof of every legal conclusion. The exact RL-02 candidate must therefore
-return with:
+The RL-01 decision authorized implementation, not public visibility or a formal
+release. Public repository visibility was a later completed human action. Git
+history, repository ownership, hashes, and a license selection remain evidence
+rather than proof of every legal conclusion. The current development candidate
+must therefore preserve:
 
 - one active rights row for every active source path;
 - retired rows for the historical workflow and removed license placeholder;
-- no CLEAR rows and no public-release-eligible rows;
+- no CLEAR rows and no formal-release-eligible rows;
 - exact MPL and Unicode license bytes;
 - Unicode provenance and package-boundary evidence;
 - contributor and AI-assistance disclosure;
@@ -30,5 +31,6 @@ return with:
 - an independent review disposition.
 
 No source outside the approved schedules or later authorized candidate surface
-is covered by inference. No push, merge, tag, publication, deployment, package
-publication, or public visibility change follows from this decision.
+is covered by inference. The repository is publicly visible, but that fact does
+not create a formal GitHub Release, package publication, Pages site, hosted
+service, production deployment, provider authority, or memory-write authority.

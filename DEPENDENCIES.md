@@ -16,12 +16,12 @@ where applicable. Those declarations describe component development or runtime
 contexts; they are not copied into root `Requires-Dist` and are not a statement
 that every component route is accepted or active.
 
-## Private-alpha CI tooling
+## Public-development CI tooling
 
-`.github/requirements-private-alpha-ci.txt` pins the private acceptance tools.
-They are installed only into the CI/test environment and are not bundled in the
-root wheel. The workflow uses only GitHub-owned actions, pinned to reviewed
-40-hex commits:
+`.github/requirements-private-alpha-ci.txt` retains its historical filename and
+pins the public-development acceptance tools. They are installed only into the
+CI/test environment and are not bundled in the root wheel. The workflow uses
+only GitHub-owned actions, pinned to reviewed 40-hex commits:
 
 ```text
 actions/checkout      11d5960a326750d5838078e36cf38b85af677262

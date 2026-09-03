@@ -1,20 +1,19 @@
-name: Private alpha CI
+name: Public development alpha CI
 
 on:
   pull_request:
   push:
     branches: [main]
-  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: private-alpha-${{ github.workflow }}-${{ github.ref }}
+  group: public-development-alpha-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  private-alpha:
+  public-development-alpha:
     name: Python 3.12 / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
@@ -40,18 +39,18 @@ jobs:
           --disable-pip-version-check
           --requirement .github/requirements-private-alpha-ci.txt
 
-      - name: Run private-alpha gates
+      - name: Run public-development gates
         run: >-
           python -B tools/run_private_alpha_ci.py
-          --repository-mode private-github
+          --repository-mode public-github-unreleased
           --expected-origin pdxvoiceteacher/triadicbrain-open-alpha
-          --evidence-root "${{ runner.temp }}/triadicbrain-private-alpha-${{ runner.os }}"
+          --evidence-root "${{ runner.temp }}/triadicbrain-public-development-${{ runner.os }}"
 
       - name: Upload compact gate evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: private-alpha-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/triadicbrain-private-alpha-${{ runner.os }}
+          name: public-development-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/triadicbrain-public-development-${{ runner.os }}
           if-no-files-found: error
           retention-days: 14

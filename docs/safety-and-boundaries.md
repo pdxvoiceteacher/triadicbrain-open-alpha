@@ -1,12 +1,13 @@
 # Safety and boundaries
 
-**[IMPLEMENTED] Enforced product boundaries · [DEFERRED] Provider and public-release acceptance**
+**[IMPLEMENTED] Enforced product boundaries · [DEFERRED] Provider and formal-release acceptance**
 
 ## Authority
 
-Every OA-01 command and artifact ends with `authority_effect=none`. Capability is
-not authorization. A candidate, audit, posture, receipt, manifest, checksum,
-test result, or private review decision cannot independently authorize memory,
+Every root public-development command and artifact ends with
+`authority_effect=none`. Capability is not authorization. A candidate, audit,
+posture, receipt, manifest, checksum,
+test result, or review decision cannot independently authorize memory,
 publication, deployment, release, or action.
 
 ## Role separation
@@ -22,8 +23,9 @@ publication, deployment, release, or action.
 
 The deterministic demo makes no network or provider call. The review server is
 foreground-only and loopback-only by default; non-loopback Host and Origin
-conditions are rejected. OA-01 does not authorize Ollama or another provider,
-model download, daemon startup, federation, or a remote connection.
+conditions are rejected. The public-development candidate does not authorize
+Ollama or another provider, model download, daemon startup, federation, or a
+remote connection.
 
 ```text
 LIVE LOCAL PROVIDER:
@@ -52,9 +54,10 @@ separately authorized, consented, and revocable work.
 
 ## Rights and release boundary
 
-This repository is a private staging projection. MPL-2.0 is selected as the
-primary private-candidate license, and Unicode-3.0 applies to the embedded
-Unicode data. Candidate license selection does not clear the 158 rights rows:
-all remain `public_status=HOLD`, and independent review is pending. No GitHub
-remote, push, publication, public release, private release, or deployment is
-authorized by this candidate.
+This repository is publicly visible and cloneable development source. MPL-2.0
+applies to UVLM-controlled and otherwise licensable material, and Unicode-3.0
+applies to the embedded Unicode data. Public visibility does not clear the 166
+rights rows: all remain `public_status=HOLD` for provenance and formal-release
+review. No formal GitHub Release, package publication, Pages site, hosted
+service, production deployment, or provider acceptance has been created. The
+internal HOLD does not revoke or narrow license terms attached to public files.

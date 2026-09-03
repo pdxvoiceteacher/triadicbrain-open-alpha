@@ -1,14 +1,14 @@
-# Triadic Brain private alpha-staging repository instructions
+# Triadic Brain public development repository instructions
 
-This repository is the private Triadic Brain alpha-staging successor for bounded
-internal development and review. Private staging does not clear any rights HOLD,
-authorize public distribution or release, or grant provider, publication,
-deployment, or memory-write authority. The operative human decision selected
-MPL-2.0 as the primary private-candidate license, while Unicode-3.0 applies to
-the embedded Unicode data. That candidate license selection does not clear any
-of the 158 rights HOLD rows or authorize public distribution. Nested component
-instructions remain binding, and a task may modify only components explicitly
-named in scope.
+This repository is publicly visible and cloneable as bounded pre-1.0 development
+source. Public source availability is not a formal GitHub Release, package
+publication, hosted service, production deployment, provider acceptance, or
+memory-write authority. The operative human decision selected MPL-2.0 for
+UVLM-controlled and otherwise licensable material, while Unicode-3.0 applies to
+the embedded Unicode data. The applicable license texts govern the public files;
+the internal rights ledger still keeps all 166 rows on HOLD for formal-release
+and provenance review. Nested component instructions remain binding, and a task
+may modify only components explicitly named in scope.
 
 ## Source precedence
 

@@ -1,4 +1,4 @@
-"""Run the bounded, provider-free RL-02 Repair01 private-alpha CI contract.
+"""Run the bounded, provider-free public-development alpha CI contract.
 
 All durable output is written beneath a fresh evidence root outside the source
 checkout.  Build/install scratch state is also external and is removed before
@@ -34,11 +34,18 @@ from urllib.parse import urlsplit
 
 
 EXPECTED_ORIGIN = "pdxvoiceteacher/triadicbrain-open-alpha"
-EXPECTED_WHEEL_NAME = "triadicbrain-0.1.0a0.dev3-py3-none-any.whl"
-EXPECTED_WHEEL_SHA256 = "3da8614355e40462f710b63078988bcb7c2f452b669014b22e2982e9501eee5a"
-EXPECTED_SDIST_NAME = "triadicbrain-0.1.0a0.dev3.tar.gz"
-EXPECTED_SDIST_SHA256 = "7acca7b5ce47ffcaed56e27d4bf2f97ee7190d5bb894bed22a70f7e346f777db"
+# Identities from two byte-identical local UX-01 builds after all package
+# inputs were finalized.
+EXPECTED_WHEEL_NAME = "triadicbrain-0.1.0a0.dev4-py3-none-any.whl"
+EXPECTED_WHEEL_SHA256 = "be3e5d3474095f7347b4ba74405eb7ed772cfcd8586d371cd66cba965610d7ed"
+EXPECTED_SDIST_NAME = "triadicbrain-0.1.0a0.dev4.tar.gz"
+EXPECTED_SDIST_SHA256 = "b4308ca06a68d3649f58f3c9c25e0541cebe9a2ba3c478eff9dda81f57f81cf0"
 EXPECTED_DEMO_SHA256 = "ed2ab14592d7c62a6e82658207680b56246f8c4126bbc0a8f94b3ae83d61202f"
+EXPECTED_SOURCE_FILES = 164
+EXPECTED_RIGHTS_ROWS = 166
+EXPECTED_DOCS = 18
+EXPECTED_POST_MERGE_CI_RUN = 33423783473
+EXPECTED_DISTRIBUTION_STATUS = "PUBLIC_DEVELOPMENT_NO_FORMAL_RELEASE"
 MPL_LICENSE_SHA256 = "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04"
 UNICODE_LICENSE_SHA256 = "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
 EXPECTED_TOOL_VERSIONS = {
@@ -60,7 +67,7 @@ GATES = (
     "toolchain_inventory_and_pip_check",
     "root_unittest",
     "complete_pytest",
-    "rl02_private_repository_validation",
+    "public_repository_validation",
     "documentation_and_links",
     "deterministic_wheel_build",
     "deterministic_sdist_build",
@@ -378,14 +385,14 @@ class Runner:
         write_json(self.evidence / "python_runtime.json", value)
         return value
 
-    def _private_context(self) -> dict[str, Any] | None:
+    def _github_context(self) -> dict[str, Any] | None:
         if os.environ.get("GITHUB_ACTIONS") != "true":
             return None
         repository = os.environ.get("GITHUB_REPOSITORY", "")
         event_name = os.environ.get("GITHUB_EVENT_NAME", "")
         event_path_raw = os.environ.get("GITHUB_EVENT_PATH", "")
         if repository.casefold() != self.expected_origin.casefold() or not event_path_raw:
-            raise GateFailure("GitHub repository context does not match the expected private origin")
+            raise GateFailure("GitHub repository context does not match the expected origin")
         event_path = Path(event_path_raw)
         payload = event_path.read_bytes()
         if len(payload) > 4 * 1024 * 1024:
@@ -395,19 +402,39 @@ class Runner:
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
             raise GateFailure("GitHub event context is invalid JSON") from exc
         repository_object = event.get("repository") if isinstance(event, dict) else None
-        if not isinstance(repository_object, dict) or repository_object.get("private") is not True:
-            raise GateFailure("GitHub event context does not attest a private repository")
+        if not isinstance(repository_object, dict):
+            raise GateFailure("GitHub event context lacks repository metadata")
         full_name = repository_object.get("full_name", repository)
         if not isinstance(full_name, str) or full_name.casefold() != self.expected_origin.casefold():
             raise GateFailure("GitHub event repository identity mismatch")
-        metadata = {
-            "authority_effect": "NONE",
-            "private": True,
-            "repository": self.expected_origin,
-            "schema": "uvlm.gh01.authenticated_repository_metadata.v1",
-            "source": "GITHUB_ACTIONS_EVENT_CONTEXT",
-        }
-        path = self.evidence / "github_private_repository_metadata.json"
+        if self.mode == "public-github-unreleased":
+            if (
+                repository_object.get("private") is not False
+                or str(repository_object.get("visibility", "")).casefold() != "public"
+            ):
+                raise GateFailure("GitHub event context does not attest a public repository")
+            metadata = {
+                "authority_effect": "NONE",
+                "private": False,
+                "repository": self.expected_origin,
+                "schema": "uvlm.github.authenticated_repository_metadata.v2",
+                "source": "GITHUB_ACTIONS_EVENT_CONTEXT",
+                "visibility": "PUBLIC",
+            }
+            path = self.evidence / "github_public_repository_metadata.json"
+        elif self.mode == "private-github":
+            if repository_object.get("private") is not True:
+                raise GateFailure("GitHub event context does not attest a private repository")
+            metadata = {
+                "authority_effect": "NONE",
+                "private": True,
+                "repository": self.expected_origin,
+                "schema": "uvlm.gh01.authenticated_repository_metadata.v1",
+                "source": "GITHUB_ACTIONS_EVENT_CONTEXT",
+            }
+            path = self.evidence / "github_private_repository_metadata.json"
+        else:
+            raise GateFailure("GitHub Actions requires an authenticated GitHub repository mode")
         write_json(path, metadata)
         self.privacy_metadata = path
         return {"event_name": event_name, "metadata_path": path.name, **metadata}
@@ -445,12 +472,12 @@ class Runner:
         self.initial_status = status
         remote_rows = self._remote_rows("git_remote_names")
         self.initial_remotes = remote_rows
-        private_context = self._private_context()
+        github_context = self._github_context()
         value = {
             "commit": self.initial_head,
             "initial_status_sha256": sha256_bytes(status),
             "initial_status_rows": status.count(b"\0"),
-            "private_repository_context": private_context or {
+            "authenticated_repository_context": github_context or {
                 "authority_effect": "NONE",
                 "source": "NOT_SUPPLIED_OUTSIDE_GITHUB_ACTIONS",
                 "status": "NOT_VERIFIED_BY_DRIVER",
@@ -502,7 +529,7 @@ class Runner:
             "--repository-mode",
             mode,
         ]
-        if mode == "private-github":
+        if mode in {"private-github", "public-github-unreleased"}:
             argv.extend(["--expected-origin", self.expected_origin])
             if self.privacy_metadata is not None:
                 argv.extend(["--privacy-metadata", str(self.privacy_metadata)])
@@ -575,9 +602,9 @@ class Runner:
         return {"mode": "local-source-candidate", "remote_count": 0, "source_file_count": value.get("source_file_count")}
 
     def gate_06(self) -> dict[str, Any]:
-        output = self.evidence / "private_repository_validation_initial.json"
+        output = self.evidence / "public_repository_validation_initial.json"
         completed = self.command(
-            "private_validation_initial",
+            "public_validation_initial",
             self._validator_argv(output, self.mode),
             env=self.source_env,
         )
@@ -608,7 +635,11 @@ class Runner:
             raise GateFailure("documentation builder stdout/manifest identity mismatch")
         manifest = read_canonical_object(output / "documentation_build.json")
         files = manifest.get("files")
-        if manifest.get("status") != "PASS" or not isinstance(files, list) or len(files) != 10:
+        if (
+            manifest.get("status") != "PASS"
+            or not isinstance(files, list)
+            or len(files) != EXPECTED_DOCS
+        ):
             raise GateFailure("documentation build manifest is incomplete")
         for row in files:
             if not isinstance(row, dict) or not isinstance(row.get("output"), str):
@@ -663,7 +694,7 @@ class Runner:
             names = archive.getnames()
             if names != sorted(names) or len(names) != len(set(names)):
                 raise GateFailure("sdist member order or uniqueness mismatch")
-            root = "triadicbrain-0.1.0a0.dev3"
+            root = "triadicbrain-0.1.0a0.dev4"
             required = {
                 f"{root}/LICENSE": MPL_LICENSE_SHA256,
                 f"{root}/licenses/Unicode-3.0.txt": UNICODE_LICENSE_SHA256,
@@ -671,7 +702,11 @@ class Runner:
             required_documents = {
                 "AI_ASSISTANCE_DISCLOSURE.md", "CONTRIBUTORS.md", "DEPENDENCIES.md",
                 "LICENSE", "LICENSE_SCOPE.md", "NOTICE", "THIRD_PARTY_NOTICES.md",
-                "licenses/Unicode-3.0.txt",
+                "licenses/Unicode-3.0.txt", "PUBLIC_DEVELOPMENT_STATUS.md",
+                "docs/evidence/rl02-repair01-main-closure.md",
+                "docs/investor-demo-checklist.md", "docs/investor-demo.md",
+                "docs/investor-one-page.md", "docs/operator-runbook.md",
+                "docs/status-matrix.md", "docs/website-front-matter.md",
             }
             for relative in required_documents:
                 if f"{root}/{relative}" not in names:
@@ -728,7 +763,7 @@ class Runner:
                 if info.create_system != 3 or stat.S_IFMT(mode) != stat.S_IFREG or stat.S_IMODE(mode) != 0o644:
                     raise GateFailure("wheel member metadata check failed")
             roots = {name.split("/", 1)[0] for name in names}
-            dist_info = "triadicbrain-0.1.0a0.dev3.dist-info"
+            dist_info = "triadicbrain-0.1.0a0.dev4.dist-info"
             if roots != {"atlas", "coherence", "sophia", "triadicbrain", dist_info}:
                 raise GateFailure("wheel package boundary mismatch")
             if any(
@@ -742,7 +777,7 @@ class Runner:
                 "\nRequires-Dist:" in "\n" + metadata
                 or "Metadata-Version: 2.4\n" not in metadata
                 or "Name: triadicbrain\n" not in metadata
-                or "Version: 0.1.0a0.dev3\n" not in metadata
+                or "Version: 0.1.0a0.dev4\n" not in metadata
                 or metadata.count("License-Expression: MPL-2.0 AND Unicode-3.0\n") != 1
                 or "License-File: LICENSE\n" not in metadata
                 or "License-File: licenses/Unicode-3.0.txt\n" not in metadata
@@ -845,16 +880,29 @@ class Runner:
             "status": "HOLD",
             "third_party_licenses": ["Unicode-3.0"],
         }
+        expected_distribution_posture = {
+            "distribution_status": EXPECTED_DISTRIBUTION_STATUS,
+            "formal_release_created": False,
+            "package_published": False,
+            "pages_enabled": False,
+            "repository_visibility": "PUBLIC",
+            "source_publicly_available": True,
+        }
         if (
             value.get("authority_effect") != "NONE"
+            or value.get("distribution_posture") != expected_distribution_posture
+            or value.get("installed_package", {}).get("version") != "0.1.0a0.dev4"
             or value.get("optional_ollama", {}).get("provider_contacted") is not False
             or value.get("rights_posture") != expected_rights_posture
             or value.get("side_effects", {}).get("network_used") is not False
+            or value.get("side_effects", {}).get("memory_written") is not False
         ):
             raise GateFailure("doctor authority, provider, rights, or network posture mismatch")
         write_json(self.evidence / "doctor_verified.json", value)
         return {
             "license_expression": "MPL-2.0 AND Unicode-3.0",
+            "distribution_posture": expected_distribution_posture,
+            "memory_written": False,
             "provider_contacted": False,
             "public_release_eligible": False,
             "rights_posture": expected_rights_posture,
@@ -915,6 +963,7 @@ class Runner:
                     key: headers.get(key)
                     for key in (
                         "cache-control",
+                        "content-type",
                         "content-security-policy",
                         "cross-origin-resource-policy",
                         "referrer-policy",
@@ -922,6 +971,7 @@ class Runner:
                         "x-frame-options",
                     )
                 },
+                "body": body,
                 "status": response.status,
             }
         finally:
@@ -933,15 +983,16 @@ class Runner:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
             probe.bind(("127.0.0.1", 0))
             port = int(probe.getsockname()[1])
+        investor_root = self.evidence / "investor-demo"
         argv = [
             str(self.venv_python),
             "-I",
             "-B",
             "-m",
             "triadicbrain",
-            "serve",
-            "--run-root",
-            str(self.demo_a),
+            "investor-demo",
+            "--output",
+            str(investor_root),
             "--host",
             "127.0.0.1",
             "--port",
@@ -971,6 +1022,7 @@ class Runner:
                     time.sleep(0.05)
             else:
                 raise GateFailure("loopback server readiness timeout")
+            responses["status"] = self._http_request(port, "GET", "/status", f"127.0.0.1:{port}")
             responses["review"] = self._http_request(port, "GET", "/review", f"127.0.0.1:{port}")
             responses["hostile_host"] = self._http_request(port, "GET", "/health", "example.test")
             responses["hostile_origin"] = self._http_request(
@@ -983,13 +1035,60 @@ class Runner:
                 "hostile_origin": 403,
                 "post_without_csrf": 403,
                 "review": 200,
+                "status": 200,
             }
             if {name: row["status"] for name, row in responses.items()} != expected:
                 raise GateFailure("loopback HTTP status contract mismatch")
-            if responses["health"]["body_sha256"] != sha256_bytes(
-                b'{"authority_effect":"NONE","status":"ok"}\n'
-            ) or responses["review"]["body_bytes"] == 0:
+            health_body = responses["health"]["body"]
+            status_body = responses["status"]["body"]
+            review_body = responses["review"]["body"]
+            if health_body != b'{"authority_effect":"NONE","status":"ok"}\n':
                 raise GateFailure("loopback HTTP response-body contract mismatch")
+            expected_status = {
+                "authority_effect": "NONE",
+                "formal_release_created": False,
+                "human_decision_submission": False,
+                "inherited_atlas_invoked": False,
+                "inherited_sophia_invoked": False,
+                "live_model_invoked": False,
+                "mode": "DETERMINISTIC_OFFLINE_FIXTURE",
+                "package_published": False,
+                "public_release_eligible": False,
+                "repository_visibility": "PUBLIC",
+                "schema_id": "uvlm.triadicbrain.demo_status.v2",
+                "source_publicly_available": True,
+            }
+            if parse_canonical_object(status_body, "status response") != expected_status:
+                raise GateFailure("canonical demo status contract mismatch")
+            try:
+                review_text = review_body.decode("utf-8", errors="strict")
+            except UnicodeDecodeError as exc:
+                raise GateFailure("review page is not UTF-8") from exc
+            required_review_tokens = (
+                "DETERMINISTIC OFFLINE FIXTURE",
+                "LIVE MODEL INVOKED:</dt><dd>NO",
+                "INHERITED SOPHIA INVOKED:</dt><dd>NO",
+                "INHERITED ATLAS INVOKED:</dt><dd>NO",
+                "NOT AVAILABLE IN THIS ROOT MODE",
+                "REPOSITORY SOURCE:</dt><dd>PUBLIC DEVELOPMENT",
+                "FORMAL RELEASE:</dt><dd>NONE",
+                "What you are seeing",
+                "What this proves",
+                "What this does not prove",
+                "Request and source",
+                "Candidate and claims",
+                "Sophia role",
+                "Atlas role",
+                "Human decision boundary",
+                "Artifacts and checksums",
+                "Next product milestone",
+            )
+            if any(token not in review_text for token in required_review_tokens):
+                raise GateFailure("review page public fixture disclosure mismatch")
+            if any(token in review_text.casefold() for token in ("<script", "javascript:", "analytics")):
+                raise GateFailure("review page includes a forbidden active resource")
+            if tree_snapshot(investor_root) != tree_snapshot(self.demo_a):
+                raise GateFailure("investor-demo changed the sealed fixture identity")
             required_headers = {
                 "cache-control": "no-store",
                 "cross-origin-resource-policy": "same-origin",
@@ -1023,26 +1122,60 @@ class Runner:
                     "argv": argv,
                     "command_id": "loopback_server",
                     "controlled_termination": True,
-                    "probe_sequence_completed": len(responses) == 5,
+                    "probe_sequence_completed": len(responses) == 6,
                     "returncode_after_controlled_stop": returncode,
                     "status": "CONTROLLED_STOP",
                 },
             )
-        value = {"binding": "127.0.0.1", "external_network_used": False, "responses": responses}
+        required_stdout = (
+            b"MODE:\nDETERMINISTIC OFFLINE FIXTURE\n\n"
+            b"LIVE MODEL INVOKED:\nNO\n\n"
+            b"INHERITED SOPHIA INVOKED:\nNO\n\n"
+            b"INHERITED ATLAS INVOKED:\nNO\n\n"
+            b"HUMAN DECISION SUBMISSION:\nNOT AVAILABLE IN THIS ROOT MODE\n\n"
+            b"REPOSITORY SOURCE:\nPUBLIC DEVELOPMENT\n\n"
+            b"FORMAL RELEASE:\nNONE\n"
+        )
+        if required_stdout not in stdout.replace(b"\r\n", b"\n"):
+            raise GateFailure("investor-demo status block mismatch")
+        for row in responses.values():
+            row.pop("body", None)
+        value = {
+            "binding": "127.0.0.1",
+            "browser_open_requested": False,
+            "external_network_used": False,
+            "memory_written": False,
+            "model_provider_invoked": False,
+            "responses": responses,
+        }
         write_json(self.evidence / "loopback_probe.json", value)
         return {"probe_count": len(responses), "statuses": {name: row["status"] for name, row in responses.items()}}
 
     def gate_15(self) -> dict[str, Any]:
-        output = self.evidence / "private_repository_validation_final.json"
+        output = self.evidence / "public_repository_validation_final.json"
         completed = self.command(
-            "private_validation_final",
+            "public_validation_final",
             self._validator_argv(output, self.mode),
             env=self.source_env,
         )
         if completed.stdout != output.read_bytes():
             raise GateFailure("final validator stdout/output identity mismatch")
         value = self._require_validation_pass(output)
-        return {"mode": self.mode, "source_file_count": value.get("source_file_count")}
+        rights = value.get("rights", {})
+        if (
+            value.get("source_file_count") != EXPECTED_SOURCE_FILES
+            or rights.get("row_count") != EXPECTED_RIGHTS_ROWS
+            or rights.get("clear_count") != 0
+            or rights.get("hold_count") != EXPECTED_RIGHTS_ROWS
+        ):
+            raise GateFailure("public source or rights topology mismatch")
+        return {
+            "mode": self.mode,
+            "rights_clear": 0,
+            "rights_hold": rights.get("hold_count"),
+            "rights_rows": rights.get("row_count"),
+            "source_file_count": value.get("source_file_count"),
+        }
 
     def gate_16(self) -> dict[str, Any]:
         if self.initial_snapshot is None:
@@ -1116,15 +1249,23 @@ class Runner:
         first_failed = next((row for row in self.gates if row["status"] == "FAIL"), None)
         result = {
             "authority_effect": "NONE",
+            "distribution_status": EXPECTED_DISTRIBUTION_STATUS,
             "external_network_used_by_driver": False,
             "first_failed_gate": first_failed["gate"] if first_failed else None,
+            "formal_release_created": False,
             "gates": self.gates,
+            "memory_written": False,
             "model_provider_invoked": False,
             "outbound_license": "MPL-2.0 AND Unicode-3.0",
             "outbound_license_candidate_only": True,
+            "package_published": False,
+            "pages_enabled": False,
+            "post_merge_ci_run": EXPECTED_POST_MERGE_CI_RUN,
             "public_release_eligible": False,
+            "repository_visibility": "PUBLIC",
             "repository_mode": self.mode,
-            "schema": "uvlm.rl02.private_alpha_ci_result.v1",
+            "schema": "uvlm.triadicbrain.public_development_ci_result.v1",
+            "source_publicly_available": True,
             "status": "PASS" if passed else "HOLD",
         }
         if error is not None and first_failed is None:
@@ -1160,7 +1301,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--evidence-root", type=Path, required=True)
     parser.add_argument(
         "--repository-mode",
-        choices=("local-source-candidate", "private-github"),
+        choices=("local-source-candidate", "private-github", "public-github-unreleased"),
         required=True,
     )
     parser.add_argument("--expected-origin", default=EXPECTED_ORIGIN)
@@ -1177,8 +1318,11 @@ def main(argv: list[str] | None = None) -> int:
     if not outside(evidence, root) or evidence == Path(evidence.anchor) or os.path.lexists(evidence):
         print("HOLD: evidence root must be fresh, bounded, and outside the source root", file=sys.stderr)
         return 2
-    if args.repository_mode == "private-github" and args.expected_origin.casefold() != EXPECTED_ORIGIN.casefold():
-        print("HOLD: private GitHub mode requires the commissioned origin", file=sys.stderr)
+    if (
+        args.repository_mode in {"private-github", "public-github-unreleased"}
+        and args.expected_origin.casefold() != EXPECTED_ORIGIN.casefold()
+    ):
+        print("HOLD: GitHub repository mode requires the commissioned origin", file=sys.stderr)
         return 2
     evidence.mkdir(parents=True, exist_ok=False)
     scratch = Path(tempfile.mkdtemp(prefix="triadicbrain-gh01-scratch-", dir=evidence.parent)).resolve()
