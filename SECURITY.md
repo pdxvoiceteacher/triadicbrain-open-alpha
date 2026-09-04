@@ -1,16 +1,16 @@
-# Security policy for private alpha staging
+# Security policy for public development alpha
 
 ## Supported status
 
-This is a private, unreleased, pre-1.0 staging candidate. There is no public
-support or security-update commitment, no authorized deployment, and no
-provider acceptance. Public distribution remains on hold.
+This is publicly available pre-1.0 development source with no formal GitHub
+Release, published package, hosted service, public support or security-update
+commitment, authorized deployment, or provider acceptance.
 
 ## Reporting a security concern
 
-Report concerns privately to the repository owner through the already approved
-private review channel. Do not open a public issue, upload sensitive artifacts,
-or create a remote solely to report an OA-01 finding. Include:
+Report sensitive concerns privately to the repository owner through an approved
+private channel. Do not place secrets, personal records, exploit details, or
+other sensitive artifacts in a public issue. Include:
 
 - the exact candidate commit/tree and artifact SHA-256;
 - affected command, path, and minimal reproduction;
@@ -27,7 +27,7 @@ the owner approves the exact channel and recipients.
 - `triadicbrain demo` is offline and uses a synthetic deterministic fixture.
 - `triadicbrain serve` is foreground and loopback-only by default and must reject
   non-loopback Host/Origin conditions.
-- OA-01 does not authorize provider calls, model downloads, remote binding,
+- The public development route does not authorize provider calls, model downloads, remote binding,
   daemon installation, PATH or registry changes, memory writes, publication,
   deployment, or release.
 - `triadicbrain doctor` is observational and must not mutate the machine.
@@ -35,4 +35,3 @@ the owner approves the exact channel and recipients.
 
 If a boundary appears violated, stop use, preserve the exact evidence, and hold
 the candidate for human review. Authority effect remains none.
-

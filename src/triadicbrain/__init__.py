@@ -1,6 +1,6 @@
-"""Bounded private-alpha facade for local, inspectable review."""
+"""Bounded public-development facade for local, inspectable review."""
 
 from __future__ import annotations
 
-__version__ = "0.1.0a0.dev3"
+__version__ = "0.1.0a0.dev4"
 __all__ = ["__version__"]

@@ -139,6 +139,41 @@ def test_private_github_requires_expected_origin_argument(tmp_path: Path) -> Non
     assert validate(repository, "private-github")["status"] == "FAIL"
 
 
+@pytest.mark.parametrize(
+    "url,form",
+    [
+        (f"https://github.com/{EXPECTED_ORIGIN}.git", "HTTPS"),
+        (f"git@github.com:{EXPECTED_ORIGIN}.git", "SSH_SCP"),
+        (f"ssh://git@github.com/{EXPECTED_ORIGIN}.git", "SSH_URL"),
+    ],
+)
+def test_public_github_unreleased_accepts_exact_origin_forms(
+    tmp_path: Path, url: str, form: str
+) -> None:
+    repository = make_repository(tmp_path)
+    add_origin(repository, url)
+    result = validate(repository, "public-github-unreleased", EXPECTED_ORIGIN)
+    assert result["status"] == "PASS"
+    assert result["normalized_origin"] == EXPECTED_ORIGIN
+    assert result["observed_remotes"][0]["fetch_urls"] == [
+        {"form": form, "normalized_repository": EXPECTED_ORIGIN}
+    ]
+
+
+def test_public_github_unreleased_requires_expected_origin(tmp_path: Path) -> None:
+    repository = make_repository(tmp_path)
+    add_origin(repository, f"https://github.com/{EXPECTED_ORIGIN}.git")
+    assert validate(repository, "public-github-unreleased")["status"] == "FAIL"
+
+
+def test_public_github_unreleased_rejects_wrong_identity(tmp_path: Path) -> None:
+    repository = make_repository(tmp_path)
+    add_origin(repository, "https://github.com/not-the-owner/not-the-repository.git")
+    assert validate(
+        repository, "public-github-unreleased", EXPECTED_ORIGIN
+    )["status"] == "FAIL"
+
+
 def test_private_github_rejects_matching_uncommissioned_origin(tmp_path: Path) -> None:
     repository = make_repository(tmp_path)
     uncommissioned = "not-the-owner/not-the-repository"
@@ -259,11 +294,67 @@ def test_authenticated_privacy_metadata_is_optional_and_validated(tmp_path: Path
     assert validate(repository, "private-github", EXPECTED_ORIGIN, metadata)["status"] == "FAIL"
 
 
+def test_authenticated_public_repository_metadata_v2_is_exact(tmp_path: Path) -> None:
+    repository = make_repository(tmp_path)
+    add_origin(repository, f"https://github.com/{EXPECTED_ORIGIN}.git")
+    metadata = tmp_path / "authenticated-public-repository-metadata.json"
+    exact = {
+        "authority_effect": "NONE",
+        "private": False,
+        "repository": EXPECTED_ORIGIN,
+        "schema": "uvlm.github.authenticated_repository_metadata.v2",
+        "source": "GITHUB_ACTIONS_EVENT_CONTEXT",
+        "visibility": "PUBLIC",
+    }
+    metadata.write_text(json.dumps(exact), encoding="utf-8")
+    result = validate(
+        repository, "public-github-unreleased", EXPECTED_ORIGIN, metadata
+    )
+    assert result["status"] == "PASS"
+    assert result["privacy_verification"] == {
+        "authority_effect": "NONE",
+        "errors": [],
+        "repository": EXPECTED_ORIGIN,
+        "source": "GITHUB_ACTIONS_EVENT_CONTEXT",
+        "status": "PASS",
+        "verified_private": False,
+        "verified_public": True,
+        "visibility": "PUBLIC",
+    }
+
+    wrong_private = dict(exact, private=True)
+    metadata.write_text(json.dumps(wrong_private), encoding="utf-8")
+    assert validate(
+        repository, "public-github-unreleased", EXPECTED_ORIGIN, metadata
+    )["status"] == "FAIL"
+
+    wrong_visibility = dict(exact, visibility="PRIVATE")
+    metadata.write_text(json.dumps(wrong_visibility), encoding="utf-8")
+    assert validate(
+        repository, "public-github-unreleased", EXPECTED_ORIGIN, metadata
+    )["status"] == "FAIL"
+
+    wrong_schema = dict(exact, schema="uvlm.gh01.authenticated_repository_metadata.v1")
+    metadata.write_text(json.dumps(wrong_schema), encoding="utf-8")
+    assert validate(
+        repository, "public-github-unreleased", EXPECTED_ORIGIN, metadata
+    )["status"] == "FAIL"
+
+    unexpected = dict(exact, unexpected="MUST_NOT_BE_REFLECTED")
+    metadata.write_text(json.dumps(unexpected), encoding="utf-8")
+    rejected = validate(
+        repository, "public-github-unreleased", EXPECTED_ORIGIN, metadata
+    )
+    assert rejected["status"] == "FAIL"
+    assert "MUST_NOT_BE_REFLECTED" not in json.dumps(rejected, sort_keys=True)
+
+
 @pytest.mark.parametrize(
     "mode,with_remote,expected_origin",
     [
         ("local-source-candidate", False, None),
         ("private-github", True, EXPECTED_ORIGIN),
+        ("public-github-unreleased", True, EXPECTED_ORIGIN),
     ],
 )
 def test_repository_mode_validation_does_not_change_git_or_worktree(

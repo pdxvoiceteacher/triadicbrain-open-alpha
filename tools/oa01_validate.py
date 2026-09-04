@@ -21,17 +21,22 @@ TEXT_SUFFIXES = {
     ".cmd", ".csv", ".html", ".ini", ".json", ".md", ".ps1", ".py",
     ".toml", ".txt", ".yml", ".yaml",
 }
-REPOSITORY_MODES = {"local-source-candidate", "private-github"}
+REPOSITORY_MODES = {
+    "local-source-candidate",
+    "private-github",
+    "public-github-unreleased",
+}
 RECORD_STATUSES = {"ACTIVE", "RETIRED"}
-EXPECTED_PRIVATE_ORIGIN = "pdxvoiceteacher/triadicbrain-open-alpha"
-EXPECTED_SUCCESSOR_BRANCH = "rights-license/mpl-unicode-notices-01-repair01"
-EXPECTED_CANDIDATE_LABEL = "v0.1.0-alpha.0-private.3-rc2"
+EXPECTED_GITHUB_ORIGIN = "pdxvoiceteacher/triadicbrain-open-alpha"
+EXPECTED_SUCCESSOR_BRANCH = "product/public-development-ux01"
+EXPECTED_CANDIDATE_LABEL = "v0.1.0-alpha.0-public-dev.1-rc1"
 EXPECTED_BASELINE_TAG = "v0.1.0-alpha.0-private.1"
 EXPECTED_BASELINE = {
-    "commit": "0a269a739834944985e20273d6ee2e716d876ae2",
-    "tree": "a5c1e097a41a5adee415785a3c010318ab2d8e9a",
+    "commit": "82f819f4f5491f5daffb510c0c6ab6a7328dd6e6",
+    "tree": "a612d2f58a8e8f2a53e06ec3a61ae1675068870c",
 }
-ORIGINAL_RL02_BASE_COMMIT = "b278378f5add312aa8fb81a6cc1e0dc5fccc49aa"
+EXPECTED_POST_MERGE_CI_RUN = 33423783473
+EXPECTED_DISTRIBUTION_STATUS = "PUBLIC_DEVELOPMENT_NO_FORMAL_RELEASE"
 EXPECTED_ACTIVE_WORKFLOWS = [".github/workflows/private-alpha-ci.yml"]
 EXPECTED_RETIRED_WORKFLOWS = [".github/workflows/triadicgate-ci.yml"]
 EXPECTED_SUPERSEDED_WORKFLOWS = [
@@ -39,16 +44,16 @@ EXPECTED_SUPERSEDED_WORKFLOWS = [
     ".github/workflows/oa01-windows-python312.yml",
 ]
 EXPECTED_MANIFEST_COUNTS = {
-    "active_source_file_count": 156,
+    "active_source_file_count": 164,
     "retired_source_file_count": 2,
     "lineage_active_count": 107,
     "lineage_retired_count": 2,
     "excluded_active_count": 8418,
     "excluded_retired_count": 2,
     "excluded_source_count": 8420,
-    "rights_active_count": 156,
+    "rights_active_count": 164,
     "rights_retired_count": 2,
-    "rights_hold_count": 158,
+    "rights_hold_count": 166,
     "rights_clear_count": 0,
 }
 PRIVACY_METADATA_SOURCES = {
@@ -64,7 +69,9 @@ EXPECTED_RETIRED_PATHS = [
 MPL_LICENSE_SHA256 = "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04"
 UNICODE_LICENSE_SHA256 = "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
 UNICODE_SOURCE_SHA256 = "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08"
-REDISTRIBUTION_AUTHORITY = "HUMAN_APPROVED_RL02_CANDIDATE_PENDING_INDEPENDENT_REVIEW"
+REDISTRIBUTION_AUTHORITY = (
+    "HUMAN_PUBLIC_REPOSITORY_VISIBILITY_COMPLETED_FORMAL_RELEASE_REMAINS_HOLD"
+)
 ACTION_PINS = {
     "actions/checkout": "11d5960a326750d5838078e36cf38b85af677262",
     "actions/setup-python": "a26af69be951a213d495a4c3e4e4022e16d87065",
@@ -95,27 +102,54 @@ MPL_MARKED_PATHS = {
     "components/CoherenceLattice/python/src/coherence/totality/waveform.py",
 }
 CHANGED_PATH_CLASSIFICATIONS = {
+    ".github/workflows/private-alpha-ci.yml": "CI_OR_TEST",
     "AGENTS.md": "BINDING_GOVERNANCE",
+    "AI_ASSISTANCE_DISCLOSURE.md": "ACTIVE_DOCUMENTATION",
+    "CONTRIBUTING.md": "ACTIVE_DOCUMENTATION",
+    "DEPENDENCIES.md": "ACTIVE_DOCUMENTATION",
+    "HUMAN_RIGHTS_ATTESTATION_REQUIRED.md": "BINDING_GOVERNANCE",
+    "LICENSE_DECISION_MEMO.md": "ACTIVE_DOCUMENTATION",
+    "LICENSE_SCOPE.md": "ACTIVE_DOCUMENTATION",
+    "NOTICE": "ACTIVE_DOCUMENTATION",
+    "NOTICE_REPAIR_PLAN.md": "ACTIVE_DOCUMENTATION",
     "PUBLIC_CLAIM_LEDGER.csv": "CLAIM_LEDGER",
+    "PUBLIC_DEVELOPMENT_STATUS.md": "NEW_PUBLIC_DEVELOPMENT_DOCUMENTATION",
     "PUBLIC_PROJECTION_MANIFEST.json": "RIGHTS_OR_LINEAGE_RECORD",
     "PROJECTION_LINEAGE.csv": "RIGHTS_OR_LINEAGE_RECORD",
     "README.md": "ACTIVE_DOCUMENTATION",
     "RIGHTS_EVIDENCE_MATRIX.csv": "RIGHTS_OR_LINEAGE_RECORD",
+    "SECURITY.md": "ACTIVE_DOCUMENTATION",
     "_triadicbrain_build_backend.py": "LICENSE_METADATA",
+    "docs/evidence/rl02-repair01-main-closure.md": "NEW_PUBLIC_DEVELOPMENT_DOCUMENTATION",
+    "docs/first-review.md": "ACTIVE_DOCUMENTATION",
     "docs/getting-started.md": "ACTIVE_DOCUMENTATION",
+    "docs/index.md": "ACTIVE_DOCUMENTATION",
+    "docs/investor-demo-checklist.md": "NEW_PUBLIC_DEVELOPMENT_DOCUMENTATION",
+    "docs/investor-demo.md": "NEW_PUBLIC_DEVELOPMENT_DOCUMENTATION",
+    "docs/investor-one-page.md": "NEW_PUBLIC_DEVELOPMENT_DOCUMENTATION",
+    "docs/operator-runbook.md": "NEW_PUBLIC_DEVELOPMENT_DOCUMENTATION",
+    "docs/output-guide.md": "ACTIVE_DOCUMENTATION",
+    "docs/research/index.md": "ACTIVE_DOCUMENTATION",
     "docs/roadmap.md": "ACTIVE_DOCUMENTATION",
     "docs/safety-and-boundaries.md": "ACTIVE_DOCUMENTATION",
+    "docs/status-matrix.md": "NEW_PUBLIC_DEVELOPMENT_DOCUMENTATION",
+    "docs/technical/index.md": "ACTIVE_DOCUMENTATION",
+    "docs/website-front-matter.md": "NEW_PUBLIC_DEVELOPMENT_DOCUMENTATION",
     "docs/whitepaper/index.md": "ACTIVE_DOCUMENTATION",
     "pyproject.toml": "LICENSE_METADATA",
     "src/triadicbrain/__init__.py": "VERSION_IDENTITY",
+    "src/triadicbrain/cli.py": "RUNTIME_STATUS_REPORT",
     "src/triadicbrain/doctor.py": "RUNTIME_STATUS_REPORT",
+    "src/triadicbrain/serve.py": "RUNTIME_STATUS_REPORT",
+    "tests/repository_modes_test.py": "CI_OR_TEST",
     "tests/test_root_package.py": "CI_OR_TEST",
+    "tools/build_docs.py": "CI_OR_TEST",
     "tools/oa01_validate.py": "CI_OR_TEST",
     "tools/run_private_alpha_ci.py": "CI_OR_TEST",
     "tools/write_projection_records.py": "RIGHTS_OR_LINEAGE_RECORD",
 }
-if len(CHANGED_PATH_CLASSIFICATIONS) != 18:
-    raise RuntimeError("RL-02 Repair01 changed-path classification count mismatch")
+if len(CHANGED_PATH_CLASSIFICATIONS) != 45:
+    raise RuntimeError("TB-PUBLIC-UX-01 changed-path classification count mismatch")
 WINDOWS_REPARSE_ATTRIBUTE = 0x400
 
 
@@ -270,12 +304,19 @@ def describe_remote_urls(values: list[str]) -> tuple[list[dict[str, str]], list[
     return descriptions, normalized
 
 
-def check_privacy_metadata(path: Path | None, expected_origin: str | None) -> dict[str, object]:
+def check_privacy_metadata(
+    path: Path | None,
+    expected_origin: str | None,
+    repository_mode: str = "private-github",
+) -> dict[str, object]:
+    expected_public = repository_mode == "public-github-unreleased"
     if path is None:
         return {
             "status": "NOT_PROVIDED",
             "verified_private": False,
+            "verified_public": False,
             "repository": expected_origin,
+            "visibility": "NOT_PROVIDED",
             "source": "NOT_PROVIDED",
             "authority_effect": "NONE",
             "errors": [],
@@ -285,7 +326,9 @@ def check_privacy_metadata(path: Path | None, expected_origin: str | None) -> di
         return {
             "status": "FAIL",
             "verified_private": False,
+            "verified_public": False,
             "repository": expected_origin,
+            "visibility": "INVALID",
             "source": "INVALID",
             "authority_effect": "NONE",
             "errors": ["privacy metadata is not an ordinary file"],
@@ -296,7 +339,9 @@ def check_privacy_metadata(path: Path | None, expected_origin: str | None) -> di
         return {
             "status": "FAIL",
             "verified_private": False,
+            "verified_public": False,
             "repository": expected_origin,
+            "visibility": "INVALID",
             "source": "INVALID",
             "authority_effect": "NONE",
             "errors": ["privacy metadata could not be read as JSON"],
@@ -305,7 +350,9 @@ def check_privacy_metadata(path: Path | None, expected_origin: str | None) -> di
         return {
             "status": "FAIL",
             "verified_private": False,
+            "verified_public": False,
             "repository": expected_origin,
+            "visibility": "INVALID",
             "source": "INVALID",
             "authority_effect": "NONE",
             "errors": ["privacy metadata is not an object"],
@@ -316,23 +363,39 @@ def check_privacy_metadata(path: Path | None, expected_origin: str | None) -> di
     except ValueError:
         normalized_repository = None
     required_keys = {"schema", "repository", "private", "source", "authority_effect"}
+    if expected_public:
+        required_keys.add("visibility")
     if set(value) != required_keys:
-        errors.append("privacy metadata keys mismatch")
-    if value.get("schema") != "uvlm.gh01.authenticated_repository_metadata.v1":
-        errors.append("privacy metadata schema mismatch")
+        errors.append("repository metadata keys mismatch")
+    expected_schema = (
+        "uvlm.github.authenticated_repository_metadata.v2"
+        if expected_public
+        else "uvlm.gh01.authenticated_repository_metadata.v1"
+    )
+    if value.get("schema") != expected_schema:
+        errors.append("repository metadata schema mismatch")
     if normalized_repository != expected_origin:
-        errors.append("privacy metadata repository mismatch")
-    if value.get("private") is not True:
-        errors.append("privacy metadata does not verify a private repository")
+        errors.append("repository metadata repository mismatch")
+    if expected_public:
+        if value.get("private") is not False or value.get("visibility") != "PUBLIC":
+            errors.append("repository metadata does not verify a public repository")
+    elif value.get("private") is not True:
+        errors.append("repository metadata does not verify a private repository")
     metadata_source = value.get("source")
     if metadata_source not in PRIVACY_METADATA_SOURCES:
-        errors.append("privacy metadata source is not authenticated")
+        errors.append("repository metadata source is not authenticated")
     if value.get("authority_effect") != "NONE":
-        errors.append("privacy metadata authority effect mismatch")
+        errors.append("repository metadata authority effect mismatch")
     return {
         "status": "PASS" if not errors else "FAIL",
-        "verified_private": not errors,
+        "verified_private": not errors and not expected_public,
+        "verified_public": not errors and expected_public,
         "repository": normalized_repository,
+        "visibility": (
+            "PUBLIC" if not errors and expected_public
+            else "PRIVATE" if not errors
+            else "INVALID"
+        ),
         "source": metadata_source if metadata_source in PRIVACY_METADATA_SOURCES else "INVALID",
         "authority_effect": "NONE",
         "errors": errors,
@@ -387,7 +450,7 @@ def check_repository(
             "fetch_urls": fetch_descriptions,
             "push_urls": push_descriptions,
         })
-    privacy = check_privacy_metadata(privacy_metadata, normalized_expected)
+    privacy = check_privacy_metadata(privacy_metadata, normalized_expected, repository_mode)
     if repository_mode == "local-source-candidate":
         if expected_origin is not None:
             errors.append("expected origin is not allowed in local-source-candidate mode")
@@ -395,13 +458,13 @@ def check_repository(
             errors.append("privacy metadata is not allowed in local-source-candidate mode")
         if remote_names:
             errors.append("local-source-candidate mode requires no Git remotes")
-    elif repository_mode == "private-github":
+    elif repository_mode in {"private-github", "public-github-unreleased"}:
         if normalized_expected is None:
-            errors.append("private-github mode requires a valid expected origin")
-        elif normalized_expected != EXPECTED_PRIVATE_ORIGIN:
+            errors.append(f"{repository_mode} mode requires a valid expected origin")
+        elif normalized_expected != EXPECTED_GITHUB_ORIGIN:
             errors.append("expected origin does not match the commissioned repository")
         if remote_names != ["origin"]:
-            errors.append("private-github mode requires exactly one remote named origin")
+            errors.append(f"{repository_mode} mode requires exactly one remote named origin")
         if remote_names == ["origin"]:
             fetch_normalized, push_normalized, fetch_count, push_count = normalized_by_name.get(
                 "origin", ([], [], 0, 0)
@@ -425,7 +488,7 @@ def check_repository(
                 if normalized_origin != normalized_expected:
                     errors.append("normalized origin does not match expected origin")
         if privacy["status"] == "FAIL":
-            errors.append("authenticated privacy metadata failed validation")
+            errors.append("authenticated repository metadata failed validation")
     return {
         "status": "PASS" if not errors else "FAIL",
         "repository_mode": repository_mode,
@@ -479,9 +542,13 @@ def scan_private_content(root: Path, files: list[Path]) -> dict[str, object]:
 
 def check_docs(root: Path) -> dict[str, object]:
     required = [
-        "README.md", "docs/index.md", "docs/getting-started.md", "docs/first-review.md",
-        "docs/output-guide.md", "docs/safety-and-boundaries.md", "docs/roadmap.md",
-        "docs/whitepaper/index.md", "docs/technical/index.md", "docs/research/index.md",
+        "README.md", "PUBLIC_DEVELOPMENT_STATUS.md", "docs/index.md",
+        "docs/getting-started.md", "docs/first-review.md", "docs/output-guide.md",
+        "docs/safety-and-boundaries.md", "docs/roadmap.md", "docs/whitepaper/index.md",
+        "docs/technical/index.md", "docs/research/index.md",
+        "docs/evidence/rl02-repair01-main-closure.md", "docs/investor-demo-checklist.md",
+        "docs/investor-demo.md", "docs/investor-one-page.md", "docs/operator-runbook.md",
+        "docs/status-matrix.md", "docs/website-front-matter.md",
     ]
     missing = [name for name in required if not (root / name).is_file()]
     bad_links: list[dict[str, str]] = []
@@ -835,20 +902,28 @@ def check_manifest(
         "superseded_workflows": EXPECTED_SUPERSEDED_WORKFLOWS,
         "triadicgate_workflow_retirement_reason": RETIRED_WORKFLOW_REASON,
         "retired_license_placeholder_reason": RETIRED_LICENSE_REASON,
-        "repository_visibility": "PRIVATE",
+        "repository_visibility": "PUBLIC",
+        "source_publicly_available": True,
+        "formal_release_created": False,
+        "package_published": False,
+        "pages_enabled": False,
+        "distribution_status": EXPECTED_DISTRIBUTION_STATUS,
         "github_actions": "RESTRICTED_GITHUB_OWNED_ACTIONS_FULL_SHA_PINS_SOURCE_DEFINED",
-        "remote_push": False,
-        "rights_status": "HUMAN_APPROVED_IMPLEMENTATION_CANDIDATE_PENDING_INDEPENDENT_REVIEW",
+        "remote_push": True,
+        "main_commit_at_phase_start": EXPECTED_BASELINE["commit"],
+        "main_tree_at_phase_start": EXPECTED_BASELINE["tree"],
+        "post_merge_ci_run": EXPECTED_POST_MERGE_CI_RUN,
+        "rights_status": "PUBLIC_SOURCE_AVAILABLE_FORMAL_RELEASE_REMAINS_HOLD",
         "authority_effect": "NONE",
         "runtime_authority_effect": "NONE",
-        "human_authority_effect": "RIGHTS_AND_LICENSE_IMPLEMENTATION_CANDIDATE_ONLY",
+        "human_authority_effect": "PUBLIC_DEVELOPMENT_DOCUMENTATION_AND_UX_CANDIDATE_ONLY",
         "public_release": False,
         "public_release_eligible": False,
         "candidate_review_status": "PENDING_INDEPENDENT_REVIEW",
         "outbound_license": "MPL-2.0 AND Unicode-3.0",
         "outbound_license_selected": True,
         "primary_license": "MPL-2.0",
-        "python_distribution_version": "0.1.0a0.dev3",
+        "python_distribution_version": "0.1.0a0.dev4",
         "third_party_licenses": ["Unicode-3.0"],
         "mpl_license_sha256": MPL_LICENSE_SHA256,
         "unicode_license_sha256": UNICODE_LICENSE_SHA256,
@@ -1009,13 +1084,24 @@ def check_rl02_surface(root: Path) -> dict[str, object]:
             errors.append("GitHub Actions full-SHA allowlist mismatch")
         if len(re.findall(r"(?m)^\s*uses:\s*", workflow_text)) != 3:
             errors.append("unreviewed GitHub Action use found")
+        workflow_tokens = (
+            "name: Public development alpha CI",
+            "--repository-mode public-github-unreleased",
+            "permissions:\n  contents: read",
+            "name: Python 3.12 / ${{ matrix.os }}",
+        )
+        for token in workflow_tokens:
+            if token not in workflow_text:
+                errors.append(f"public-development workflow token missing: {token}")
+        if re.search(r"(?m)^\s*workflow_dispatch\s*:", workflow_text):
+            errors.append("workflow_dispatch remains enabled")
     else:
-        errors.append("private-alpha workflow missing")
+        errors.append("public-development workflow missing")
 
     scope_text = (root / "LICENSE_SCOPE.md").read_text(encoding="utf-8")
     for token in (
         "MPL-2.0", "Unicode License V3", "AI-assisted material",
-        "do not narrow", "public-release HOLD",
+        "do not narrow", "formal-release review",
     ):
         if token not in scope_text:
             errors.append(f"license scope token missing: {token}")
@@ -1045,10 +1131,31 @@ def check_rl02_surface(root: Path) -> dict[str, object]:
 
     active_posture_paths = (
         "AGENTS.md",
+        "AI_ASSISTANCE_DISCLOSURE.md",
+        "CONTRIBUTING.md",
+        "DEPENDENCIES.md",
+        "HUMAN_RIGHTS_ATTESTATION_REQUIRED.md",
+        "LICENSE_DECISION_MEMO.md",
+        "LICENSE_SCOPE.md",
+        "NOTICE",
+        "NOTICE_REPAIR_PLAN.md",
         "README.md",
+        "SECURITY.md",
+        "PUBLIC_DEVELOPMENT_STATUS.md",
+        "docs/first-review.md",
         "docs/getting-started.md",
+        "docs/index.md",
+        "docs/investor-demo-checklist.md",
+        "docs/investor-demo.md",
+        "docs/investor-one-page.md",
+        "docs/operator-runbook.md",
+        "docs/output-guide.md",
+        "docs/research/index.md",
         "docs/roadmap.md",
         "docs/safety-and-boundaries.md",
+        "docs/status-matrix.md",
+        "docs/technical/index.md",
+        "docs/website-front-matter.md",
         "docs/whitepaper/index.md",
         "PUBLIC_CLAIM_LEDGER.csv",
         "PUBLIC_PROJECTION_MANIFEST.json",
@@ -1065,6 +1172,8 @@ def check_rl02_surface(root: Path) -> dict[str, object]:
         "0.1.0a0.dev2",
         "v0.1.0-alpha.0-private.3-rc1",
         "license :: osi approved :: mozilla public license 2.0",
+        "private alpha-staging repository",
+        "this repository is private",
     )
     stale_posture: list[dict[str, str]] = []
     for relative_name in active_posture_paths:
@@ -1093,13 +1202,19 @@ def check_rl02_surface(root: Path) -> dict[str, object]:
         release_claim.get("status") != "DEFERRED"
         or release_claim.get("public_status") != "HOLD"
         or observed_claim_evidence != required_claim_evidence
-        or "158 rights rows remain HOLD" not in release_claim.get("limitation", "")
-        or "public release is not authorized" not in release_claim.get("limitation", "")
+        or "166 rights rows remain HOLD" not in release_claim.get("limitation", "")
+        or "formal release is not authorized" not in release_claim.get("limitation", "")
     ):
         errors.append("CLM-015 selected-license HOLD posture mismatch")
 
     doctor_text = (root / "src" / "triadicbrain" / "doctor.py").read_text(encoding="utf-8")
     for token in (
+        '"distribution_status": "PUBLIC_DEVELOPMENT_NO_FORMAL_RELEASE"',
+        '"formal_release_created": False',
+        '"package_published": False',
+        '"pages_enabled": False',
+        '"repository_visibility": "PUBLIC"',
+        '"source_publicly_available": True',
         '"candidate_review_status": "PENDING_INDEPENDENT_REVIEW"',
         '"outbound_license_selected": True',
         '"primary_license": "MPL-2.0"',
@@ -1112,7 +1227,7 @@ def check_rl02_surface(root: Path) -> dict[str, object]:
 
     pyproject_text = (root / "pyproject.toml").read_text(encoding="utf-8")
     for token in (
-        'version = "0.1.0a0.dev3"', "dependencies = []",
+        'version = "0.1.0a0.dev4"', "dependencies = []",
         'license = "MPL-2.0 AND Unicode-3.0"',
         'license-files = ["LICENSE", "licenses/Unicode-3.0.txt"]',
     ):
@@ -1131,39 +1246,22 @@ def check_rl02_surface(root: Path) -> dict[str, object]:
         check=False,
     )
     changed: set[str] | None = None
-    cumulative: set[str] | None = None
     if base_probe.returncode == 0:
         try:
             changed = set(git_lines(root, "diff", "--name-only", EXPECTED_BASELINE["commit"], "--"))
             changed.update(git_lines(root, "ls-files", "--others", "--exclude-standard"))
             changed = {path.replace("\\", "/") for path in changed}
         except (OSError, subprocess.SubprocessError):
-            errors.append("RL-02 changed surface unavailable")
+            errors.append("TB-PUBLIC-UX-01 changed surface unavailable")
         if changed is not None and changed != set(CHANGED_PATH_CLASSIFICATIONS):
-            errors.append("RL-02 Repair01 changed path ceiling or classification mismatch")
-        original_probe = subprocess.run(
-            ["git", "-C", str(root), "cat-file", "-e", f"{ORIGINAL_RL02_BASE_COMMIT}^{{commit}}"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        )
-        if original_probe.returncode == 0:
-            try:
-                cumulative = set(git_lines(root, "diff", "--name-only", ORIGINAL_RL02_BASE_COMMIT, "--"))
-                cumulative.update(git_lines(root, "ls-files", "--others", "--exclude-standard"))
-                cumulative = {path.replace("\\", "/") for path in cumulative}
-            except (OSError, subprocess.SubprocessError):
-                errors.append("cumulative RL-02 changed surface unavailable")
-            if cumulative is not None and len(cumulative) != 42:
-                errors.append("cumulative RL-02 changed path preservation mismatch")
+            errors.append("TB-PUBLIC-UX-01 changed path ceiling or classification mismatch")
 
     return {
         "status": "PASS" if not errors else "FAIL",
         "license_sha256": hashes,
         "unicode_ranges": range_results,
         "action_pins": uses_rows,
-        "changed_path_count": len(changed) if changed is not None else 18,
-        "cumulative_changed_path_count": len(cumulative) if cumulative is not None else 42,
+        "changed_path_count": len(changed) if changed is not None else 45,
         "changed_surface_basis": "BASE_COMMIT_DIFF" if changed is not None else "CANONICAL_COMMITTED_FIXTURE",
         "changed_path_classifications": {
             path: CHANGED_PATH_CLASSIFICATIONS[path] for path in sorted(CHANGED_PATH_CLASSIFICATIONS)

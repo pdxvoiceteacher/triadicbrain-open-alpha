@@ -7,12 +7,19 @@ import ipaddress
 import json
 import secrets
 import socket
+import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 
-from .contracts import ContractError, is_link_like, parse_canonical_object, sha256_bytes
+from .contracts import (
+    ContractError,
+    canonical_json,
+    is_link_like,
+    parse_canonical_object,
+    sha256_bytes,
+)
 
 
 SECURITY_HEADERS = {
@@ -23,6 +30,22 @@ SECURITY_HEADERS = {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
 }
+
+DEMO_STATUS = {
+    "authority_effect": "NONE",
+    "formal_release_created": False,
+    "human_decision_submission": False,
+    "inherited_atlas_invoked": False,
+    "inherited_sophia_invoked": False,
+    "live_model_invoked": False,
+    "mode": "DETERMINISTIC_OFFLINE_FIXTURE",
+    "package_published": False,
+    "public_release_eligible": False,
+    "repository_visibility": "PUBLIC",
+    "schema_id": "uvlm.triadicbrain.demo_status.v2",
+    "source_publicly_available": True,
+}
+DEMO_STATUS_BYTES = canonical_json(DEMO_STATUS)
 
 
 def _loopback(value: str) -> bool:
@@ -100,28 +123,81 @@ def load_review(run_root: Path) -> dict[str, Any]:
     actual = {path.name for path in run_root.iterdir()}
     if actual != expected:
         raise ContractError("run root topology mismatch")
+    values["run_manifest.json"] = manifest
     return values
 
 
 def render_review(values: dict[str, Any], csrf_token: str) -> bytes:
+    request = values["request_envelope.json"]
+    grounding = values["grounding_bundle.json"]
     candidate = values["candidate_packet.json"]
     sophia = values["sophia_audit.json"]
     atlas = values["atlas_posture.json"]
     human = values["human_review.json"]
+    manifest = values["run_manifest.json"]
     claims = "".join(
         f"<li>{html.escape(str(row.get('text', '')))}</li>" for row in candidate.get("claims", [])
     )
+    artifacts = "".join(
+        "<li><code>"
+        f"{html.escape(str(row.get('path', '')))}</code> — "
+        f"<code>{html.escape(str(row.get('sha256', '')))}</code></li>"
+        for row in manifest.get("artifacts", [])
+    )
     body = (
-        "<!doctype html><html lang=\"en\"><meta charset=\"utf-8\">"
-        "<title>Triadic Brain private-alpha review</title>"
-        "<h1>Bounded local review</h1>"
-        "<p>Candidate, audit, and posture are evidence for human review; none is truth or final authority.</p>"
-        f"<h2>Candidate</h2><p>{html.escape(str(candidate.get('answer', '')))}</p><ul>{claims}</ul>"
-        f"<h2>Sophia</h2><p>{html.escape(str(sophia.get('disposition', '')))}</p>"
-        f"<h2>Atlas</h2><p>{html.escape(str(atlas.get('orientation', '')))}</p>"
-        f"<h2>Human decision</h2><p>{html.escape(str(human.get('decision', 'PENDING')))}</p>"
-        f"<meta name=\"csrf-token\" content=\"{html.escape(csrf_token)}\">"
-        "</html>"
+        "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">"
+        "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+        "<title>Triadic Brain public development review</title>"
+        "<style>"
+        ":root{color-scheme:light dark;font-family:system-ui,sans-serif}"
+        "body{max-width:72rem;margin:auto;padding:1rem;color:CanvasText;background:Canvas}"
+        "header,main,section{display:block}section{margin-block:1rem;padding:1rem;border:1px solid GrayText}"
+        "h1,h2{line-height:1.2}dl{display:grid;grid-template-columns:minmax(14rem,1fr) 2fr;gap:.5rem 1rem}"
+        "dt{font-weight:700}dd{margin:0}code{overflow-wrap:anywhere}"
+        ".status{border-width:2px}.boundary{font-weight:700}"
+        "</style>"
+        f"<meta name=\"csrf-token\" content=\"{html.escape(csrf_token)}\"></head><body>"
+        "<header><h1>Triadic Brain bounded local review</h1></header><main>"
+        "<section class=\"status\" aria-labelledby=\"fixture-status\">"
+        "<h2 id=\"fixture-status\">Current fixture status</h2><dl>"
+        "<dt>MODE:</dt><dd>DETERMINISTIC OFFLINE FIXTURE</dd>"
+        "<dt>LIVE MODEL INVOKED:</dt><dd>NO</dd>"
+        "<dt>INHERITED SOPHIA INVOKED:</dt><dd>NO</dd>"
+        "<dt>INHERITED ATLAS INVOKED:</dt><dd>NO</dd>"
+        "<dt>HUMAN DECISION SUBMISSION:</dt><dd>NOT AVAILABLE IN THIS ROOT MODE</dd>"
+        "<dt>REPOSITORY SOURCE:</dt><dd>PUBLIC DEVELOPMENT</dd>"
+        "<dt>FORMAL RELEASE:</dt><dd>NONE</dd>"
+        "</dl></section>"
+        "<section aria-labelledby=\"what-seeing\"><h2 id=\"what-seeing\">What you are seeing</h2>"
+        "<p>This page presents a sealed deterministic fixture for bounded human review. "
+        "Historical PRIVATE-ALPHA identifiers are frozen fixture identifiers, not the repository’s current visibility.</p>"
+        "</section>"
+        "<section aria-labelledby=\"what-proves\"><h2 id=\"what-proves\">What this proves</h2>"
+        "<p>The fixture demonstrates separate request, evidence, candidate, audit, posture, human-review, and checksum artifacts.</p>"
+        "</section>"
+        "<section aria-labelledby=\"what-not-prove\"><h2 id=\"what-not-prove\">What this does not prove</h2>"
+        "<p>It does not certify truth, compliance, safety, production readiness, or live-model behavior.</p></section>"
+        "<section aria-labelledby=\"request-source\"><h2 id=\"request-source\">Request and source</h2>"
+        f"<p><strong>Task:</strong> {html.escape(str(request.get('task', '')))}</p>"
+        f"<p><strong>Source:</strong> {html.escape(str(grounding.get('source_label', '')))}</p></section>"
+        "<section aria-labelledby=\"candidate-claims\"><h2 id=\"candidate-claims\">Candidate and claims</h2>"
+        f"<p class=\"boundary\">This is a proposal, not a final answer.</p><p>{html.escape(str(candidate.get('answer', '')))}</p>"
+        f"<ul>{claims}</ul></section>"
+        "<section aria-labelledby=\"sophia-role\"><h2 id=\"sophia-role\">Sophia role</h2>"
+        f"<p>{html.escape(str(sophia.get('disposition', '')))}</p>"
+        "<p>The root fixture uses a fixed Sophia-labeled audit artifact; inherited Sophia was not invoked.</p></section>"
+        "<section aria-labelledby=\"atlas-role\"><h2 id=\"atlas-role\">Atlas role</h2>"
+        f"<p>{html.escape(str(atlas.get('orientation', '')))}</p>"
+        "<p>The root fixture uses a fixed Atlas-labeled posture artifact; inherited Atlas was not invoked.</p></section>"
+        "<section aria-labelledby=\"human-boundary\"><h2 id=\"human-boundary\">Human decision boundary</h2>"
+        f"<p>Recorded fixture decision: <strong>{html.escape(str(human.get('decision', 'PENDING')))}</strong>.</p>"
+        "<p>No decision can be submitted from this read-only root page.</p></section>"
+        "<section aria-labelledby=\"artifacts-checksums\"><h2 id=\"artifacts-checksums\">Artifacts and checksums</h2>"
+        f"<ul>{artifacts}</ul><p>Checksums establish byte identity, not truth.</p></section>"
+        "<section aria-labelledby=\"next-milestone\"><h2 id=\"next-milestone\">Next product milestone</h2>"
+        "<p>The next ordinary-user milestone is local document and task intake, captured-candidate review, "
+        "bounded human decisions, and verifiable export.</p></section>"
+        "</main></body></html>"
     )
     return body.encode("utf-8")
 
@@ -135,7 +211,13 @@ class _ReviewServerV6(_ReviewServer):
     address_family = socket.AF_INET6
 
 
-def serve_review(run_root: Path, host: str = "127.0.0.1", port: int = 8765) -> None:
+def serve_review(
+    run_root: Path,
+    host: str = "127.0.0.1",
+    port: int = 8765,
+    *,
+    open_browser: bool = False,
+) -> None:
     if host not in {"127.0.0.1", "::1"} or not (0 <= port <= 65535):
         raise ContractError("serve host/port must be explicit loopback and valid")
     values = load_review(run_root.resolve(strict=True))
@@ -143,7 +225,7 @@ def serve_review(run_root: Path, host: str = "127.0.0.1", port: int = 8765) -> N
     page = render_review(values, csrf)
 
     class Handler(BaseHTTPRequestHandler):
-        server_version = "TriadicBrainPrivateAlpha"
+        server_version = "TriadicBrainPublicDevelopment"
         sys_version = ""
 
         def _send(self, status: int, content_type: str, body: bytes) -> None:
@@ -176,6 +258,8 @@ def serve_review(run_root: Path, host: str = "127.0.0.1", port: int = 8765) -> N
                 self._policy()
                 if self.path == "/health":
                     self._send(200, "application/json; charset=utf-8", b'{"authority_effect":"NONE","status":"ok"}\n')
+                elif self.path == "/status":
+                    self._send(200, "application/json; charset=utf-8", DEMO_STATUS_BYTES)
                 elif self.path in {"/", "/review"}:
                     self._send(200, "text/html; charset=utf-8", page)
                 else:
@@ -198,9 +282,12 @@ def serve_review(run_root: Path, host: str = "127.0.0.1", port: int = 8765) -> N
     server_type = _ReviewServerV6 if host == "::1" else _ReviewServer
     server = server_type((host, port), Handler)
     try:
+        if open_browser:
+            display_host = f"[{host}]" if host == "::1" else host
+            bound_port = int(server.server_address[1])
+            webbrowser.open(f"http://{display_host}:{bound_port}/review", new=2)
         server.serve_forever()
     except KeyboardInterrupt:
         pass
     finally:
         server.server_close()
-

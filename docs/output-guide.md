@@ -35,5 +35,6 @@ smuggled into the set claimed byte-identical.
 
 The included fixture is synthetic and intended for offline use. Do not replace
 it with credentials, private records, personal source documents, or material you
-are not authorized to review. Review exports before sharing them, even inside a
-private workflow.
+are not authorized to review. The source repository is public, but locally
+created review exports are not automatically public or safe to share. Inspect
+every export before sharing it.

@@ -1,8 +1,8 @@
-Triadic Brain private alpha
+Triadic Brain public development alpha — no formal release
 
 Copyright 2026 Thomas Prislac and Ultra Verba, Lux Mentis contributors.
 
-UVLM-controlled and otherwise licensable material in this private candidate is
+UVLM-controlled and otherwise licensable material in this public repository is
 offered under the Mozilla Public License 2.0 subject to LICENSE_SCOPE.md. Six
 inherited coherence.totality files retain their existing file-level MPL-2.0
 SPDX notices.
@@ -16,6 +16,7 @@ licenses/Unicode-3.0.txt.
 as a current rightsholder. AI systems are not represented as contributors,
 owners, officers, or rightsholders.
 
-This notice accompanies a private implementation candidate. It does not claim
-legal compliance, production readiness, public-release authority, or truth
-certification.
+This notice accompanies publicly available development source. No formal GitHub
+Release, package publication, hosted service, or production deployment has been
+created. This notice does not claim legal compliance, production readiness, or
+truth certification.

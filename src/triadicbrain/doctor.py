@@ -1,4 +1,4 @@
-"""Read-only local readiness report for the private alpha."""
+"""Read-only local readiness report for the public development alpha."""
 
 from __future__ import annotations
 
@@ -22,6 +22,14 @@ def doctor_report() -> dict[str, Any]:
     compatible = sys.version_info >= (3, 12) and sys.version_info < (4, 0)
     return {
         "authority_effect": "NONE",
+        "distribution_posture": {
+            "distribution_status": "PUBLIC_DEVELOPMENT_NO_FORMAL_RELEASE",
+            "formal_release_created": False,
+            "package_published": False,
+            "pages_enabled": False,
+            "repository_visibility": "PUBLIC",
+            "source_publicly_available": True,
+        },
         "installed_package": {
             "name": "triadicbrain",
             "version": installed_version,
@@ -56,6 +64,6 @@ def doctor_report() -> dict[str, Any]:
             "status": "HOLD",
             "third_party_licenses": ["Unicode-3.0"],
         },
-        "schema_id": "uvlm.triadicbrain.doctor_report.v1",
+        "schema_id": "uvlm.triadicbrain.doctor_report.v2",
         "side_effects": dict(SIDE_EFFECT_DENIALS),
     }

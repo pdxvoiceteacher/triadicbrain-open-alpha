@@ -1,10 +1,10 @@
 # Technical index
 
-**Private technical material · Public rights HOLD · Authority effect NONE**
+**Public development technical material · No formal release · Rights HOLD · Authority effect NONE**
 
-This index describes the bounded OA-01 contract and source projection. It does
-not endorse every historical component document present for lineage or package
-support.
+This index describes the bounded public-development contract and source
+projection. It does not endorse every historical component document present for
+lineage or package support.
 
 ## Canonical contract
 
@@ -49,11 +49,12 @@ artifacts are not silently represented as root-demo output.
 audit, TEL, adapter, quarantine, and PMR consent schemas are present in the
 projection. The root package must include the schemas it uses and verify
 source/package resource parity. The final wheel-member inventory and parity log
-in the OA-01 handoff are the build-specific evidence.
+in the candidate handoff are the build-specific evidence.
 
 ## Validation surfaces
 
-**[PROPOSED]** A final OA-01 candidate is expected to preserve raw logs for:
+**[PROPOSED]** A final public-development candidate is expected to preserve raw
+logs for:
 
 - two source-package and two wheel builds;
 - clean source and wheel installs;
@@ -63,8 +64,8 @@ in the OA-01 handoff are the build-specific evidence.
 - casefold, wheel-member, package-resource, privacy, secret, and path checks;
 - documentation rendering and internal-link validation.
 
-No required skip is green. The final review handoff, not a CI configuration or
-this index, states which checks actually ran.
+No required skip is green. The final review handoff and remote CI evidence, not
+a configuration file or this index, state which checks actually ran.
 
 ## Inherited architecture references
 
@@ -75,5 +76,5 @@ remain rights-held:
 - `components/Sophia/docs/architecture/UVLM_TCC_ADR_001_SOPHIA_ADOPTION.md`
 - `components/uvlm-publications/docs/architecture/UVLM_TCC_ADR_001_ATLAS_PUBLISHER_ADOPTION.md`
 
-Broader component READMEs may mention surfaces excluded from OA-01. Treat those
-mentions as historical context, not current root-package claims.
+Broader component READMEs may mention surfaces excluded from the root route.
+Treat those mentions as historical context, not current root-package claims.

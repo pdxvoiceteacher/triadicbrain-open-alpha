@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import argparse
 import hashlib
 import importlib.util
+import io
 import json
 import csv
 import re
@@ -11,7 +13,9 @@ import tarfile
 import tempfile
 import unittest
 import zipfile
+from contextlib import redirect_stdout
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE_COMMIT = "b278378f5add312aa8fb81a6cc1e0dc5fccc49aa"
@@ -28,6 +32,50 @@ EXPECTED_RIGHTS_POSTURE = {
     "status": "HOLD",
     "third_party_licenses": ["Unicode-3.0"],
 }
+EXPECTED_DISTRIBUTION_POSTURE = {
+    "distribution_status": "PUBLIC_DEVELOPMENT_NO_FORMAL_RELEASE",
+    "formal_release_created": False,
+    "package_published": False,
+    "pages_enabled": False,
+    "repository_visibility": "PUBLIC",
+    "source_publicly_available": True,
+}
+EXPECTED_DEMO_STATUS = {
+    "authority_effect": "NONE",
+    "formal_release_created": False,
+    "human_decision_submission": False,
+    "inherited_atlas_invoked": False,
+    "inherited_sophia_invoked": False,
+    "live_model_invoked": False,
+    "mode": "DETERMINISTIC_OFFLINE_FIXTURE",
+    "package_published": False,
+    "public_release_eligible": False,
+    "repository_visibility": "PUBLIC",
+    "schema_id": "uvlm.triadicbrain.demo_status.v2",
+    "source_publicly_available": True,
+}
+PUBLIC_DEVELOPMENT_DOCUMENTS = (
+    "PUBLIC_DEVELOPMENT_STATUS.md",
+    "docs/evidence/rl02-repair01-main-closure.md",
+    "docs/investor-demo-checklist.md",
+    "docs/investor-demo.md",
+    "docs/investor-one-page.md",
+    "docs/operator-runbook.md",
+    "docs/status-matrix.md",
+    "docs/website-front-matter.md",
+)
+REVIEW_SECTIONS = (
+    "What you are seeing",
+    "What this proves",
+    "What this does not prove",
+    "Request and source",
+    "Candidate and claims",
+    "Sophia role",
+    "Atlas role",
+    "Human decision boundary",
+    "Artifacts and checksums",
+    "Next product milestone",
+)
 ACTION_PINS = {
     "actions/checkout": "11d5960a326750d5838078e36cf38b85af677262",
     "actions/setup-python": "a26af69be951a213d495a4c3e4e4022e16d87065",
@@ -51,15 +99,33 @@ MPL_PATHS = (
 )
 sys.path.insert(0, str(ROOT / "src"))
 
-from triadicbrain.contracts import ContractError, parse_canonical_object  # noqa: E402
+from triadicbrain.cli import INVESTOR_STATUS_BLOCK, _investor_port, main as cli_main  # noqa: E402
+from triadicbrain.contracts import ContractError, canonical_json, parse_canonical_object  # noqa: E402
 from triadicbrain.demo import run_demo  # noqa: E402
 from triadicbrain.doctor import doctor_report  # noqa: E402
-from triadicbrain.serve import load_review, render_review, validate_request_policy  # noqa: E402
+from triadicbrain.serve import (  # noqa: E402
+    DEMO_STATUS,
+    DEMO_STATUS_BYTES,
+    load_review,
+    render_review,
+    serve_review,
+    validate_request_policy,
+)
 
 
 def _backend():
     spec = importlib.util.spec_from_file_location(
         "triadicbrain_test_backend", ROOT / "_triadicbrain_build_backend.py"
+    )
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _docs_builder():
+    spec = importlib.util.spec_from_file_location(
+        "triadicbrain_test_docs_builder", ROOT / "tools" / "build_docs.py"
     )
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
@@ -84,8 +150,9 @@ def _range_rows(payload: bytes, test_path: bool) -> tuple[str, ...]:
 class RootPackageTests(unittest.TestCase):
     def test_doctor_is_read_only_and_conservative(self) -> None:
         report = doctor_report()
-        self.assertEqual(report["schema_id"], "uvlm.triadicbrain.doctor_report.v1")
+        self.assertEqual(report["schema_id"], "uvlm.triadicbrain.doctor_report.v2")
         self.assertTrue(report["python"]["compatible"])
+        self.assertEqual(report["distribution_posture"], EXPECTED_DISTRIBUTION_POSTURE)
         self.assertEqual(report["rights_posture"], EXPECTED_RIGHTS_POSTURE)
         self.assertFalse(report["optional_ollama"]["provider_contacted"])
         self.assertTrue(all(value is False for value in report["side_effects"].values()))
@@ -114,7 +181,94 @@ class RootPackageTests(unittest.TestCase):
             self.assertFalse(atlas["canonization_performed"])
             self.assertEqual(human["decision"], "PENDING")
             self.assertFalse(human["decision_overwritten_by_automation"])
-            self.assertIn(b"Human decision", render_review(values, "fixed-test-token"))
+            page = render_review(values, "fixed-test-token")
+            self.assertIn(b"Human decision boundary", page)
+
+    def test_review_page_is_truthful_accessible_and_self_contained(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            run_root = Path(temporary) / "run"
+            run_demo(run_root)
+            page = render_review(load_review(run_root.resolve()), "fixed-test-token").decode("utf-8")
+        status_tokens = (
+            "MODE:</dt><dd>DETERMINISTIC OFFLINE FIXTURE",
+            "LIVE MODEL INVOKED:</dt><dd>NO",
+            "INHERITED SOPHIA INVOKED:</dt><dd>NO",
+            "INHERITED ATLAS INVOKED:</dt><dd>NO",
+            "HUMAN DECISION SUBMISSION:</dt><dd>NOT AVAILABLE IN THIS ROOT MODE",
+            "REPOSITORY SOURCE:</dt><dd>PUBLIC DEVELOPMENT",
+            "FORMAL RELEASE:</dt><dd>NONE",
+        )
+        offsets = [page.index(token) for token in status_tokens]
+        self.assertEqual(offsets, sorted(offsets))
+        section_offsets = [page.index(f">{title}</h2>") for title in REVIEW_SECTIONS]
+        self.assertEqual(section_offsets, sorted(section_offsets))
+        self.assertGreater(section_offsets[0], offsets[-1])
+        self.assertIn("system-ui", page)
+        self.assertIn("color:CanvasText", page)
+        self.assertIn("frozen fixture identifiers", page)
+        self.assertNotIn("<script", page.casefold())
+        self.assertIsNone(re.search(r"(?:href|src)=[\"']https?://", page, re.IGNORECASE))
+
+    def test_status_contract_is_exact_canonical_public_development_json(self) -> None:
+        self.assertEqual(DEMO_STATUS, EXPECTED_DEMO_STATUS)
+        self.assertEqual(DEMO_STATUS_BYTES, canonical_json(EXPECTED_DEMO_STATUS))
+        self.assertEqual(parse_canonical_object(DEMO_STATUS_BYTES, "demo status"), EXPECTED_DEMO_STATUS)
+
+    def test_investor_demo_runs_doctor_fixture_and_foreground_serve_contract(self) -> None:
+        for include_browser in (False, True):
+            with self.subTest(open_browser=include_browser), tempfile.TemporaryDirectory() as temporary:
+                output = Path(temporary) / "investor-run"
+                argv = ["investor-demo", "--output", str(output), "--host", "127.0.0.1", "--port", "8765"]
+                if include_browser:
+                    argv.append("--open-browser")
+                stream = io.StringIO()
+                with mock.patch("triadicbrain.cli.doctor_report", wraps=doctor_report) as doctor, mock.patch(
+                    "triadicbrain.cli.serve_review"
+                ) as serve, redirect_stdout(stream):
+                    self.assertEqual(cli_main(argv), 0)
+                doctor.assert_called_once_with()
+                serve.assert_called_once_with(
+                    output.resolve(strict=True),
+                    "127.0.0.1",
+                    8765,
+                    open_browser=include_browser,
+                )
+                self.assertEqual(
+                    hashlib.sha256(canonical_json([
+                        {
+                            "bytes": path.stat().st_size,
+                            "path": path.name,
+                            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                        }
+                        for path in sorted(output.iterdir(), key=lambda item: item.name)
+                    ])).hexdigest(),
+                    DEMO_SHA256,
+                )
+                printed = stream.getvalue()
+                self.assertTrue(printed.startswith(INVESTOR_STATUS_BLOCK))
+                self.assertIn(DEMO_SHA256, printed)
+                self.assertIn("http://127.0.0.1:8765/review", printed)
+
+    def test_investor_demo_port_contract_is_bounded(self) -> None:
+        self.assertEqual(_investor_port("1"), 1)
+        self.assertEqual(_investor_port("65535"), 65535)
+        for value in ("0", "65536", "not-a-port"):
+            with self.subTest(value=value), self.assertRaises(argparse.ArgumentTypeError):
+                _investor_port(value)
+
+    def test_browser_opening_is_strictly_opt_in_after_server_binding(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            run_root = Path(temporary) / "run"
+            run_demo(run_root)
+            with mock.patch("triadicbrain.serve._ReviewServer.serve_forever"), mock.patch(
+                "triadicbrain.serve.webbrowser.open"
+            ) as browser:
+                serve_review(run_root.resolve(), "127.0.0.1", 0, open_browser=False)
+                browser.assert_not_called()
+                serve_review(run_root.resolve(), "127.0.0.1", 0, open_browser=True)
+                browser.assert_called_once()
+                opened_url = browser.call_args.args[0]
+                self.assertRegex(opened_url, r"^http://127\.0\.0\.1:[1-9][0-9]*/review$")
 
     def test_demo_refuses_existing_output(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -163,8 +317,8 @@ class RootPackageTests(unittest.TestCase):
         self.assertLess(len((ROOT / "components" / "CoherenceLattice" / "README.md").read_bytes()), 6000)
         with (ROOT / "RIGHTS_EVIDENCE_MATRIX.csv").open(encoding="utf-8", newline="") as handle:
             rights = list(csv.DictReader(handle))
-        self.assertEqual(len(rights), 158)
-        self.assertEqual(sum(row["record_status"] == "ACTIVE" for row in rights), 156)
+        self.assertEqual(len(rights), 166)
+        self.assertEqual(sum(row["record_status"] == "ACTIVE" for row in rights), 164)
         self.assertEqual(sum(row["record_status"] == "RETIRED" for row in rights), 2)
         self.assertTrue(all(row["public_status"] == "HOLD" for row in rights))
         self.assertTrue(all(row["public_release_eligible"] == "false" for row in rights))
@@ -243,14 +397,25 @@ class RootPackageTests(unittest.TestCase):
                 self.assertNotIn(fragment, text, f"{relative}: {fragment}")
 
         manifest = json.loads((ROOT / "PUBLIC_PROJECTION_MANIFEST.json").read_bytes())
-        self.assertEqual(manifest["candidate_label"], "v0.1.0-alpha.0-private.3-rc2")
-        self.assertEqual(manifest["python_distribution_version"], "0.1.0a0.dev3")
+        self.assertEqual(manifest["candidate_label"], "v0.1.0-alpha.0-public-dev.1-rc1")
+        self.assertEqual(manifest["python_distribution_version"], "0.1.0a0.dev4")
         self.assertEqual(manifest["outbound_license"], LICENSE_EXPRESSION)
         self.assertEqual(manifest["primary_license"], "MPL-2.0")
         self.assertEqual(manifest["third_party_licenses"], ["Unicode-3.0"])
         self.assertTrue(manifest["outbound_license_selected"])
+        self.assertEqual(manifest["repository_visibility"], "PUBLIC")
+        self.assertTrue(manifest["source_publicly_available"])
+        self.assertFalse(manifest["formal_release_created"])
+        self.assertFalse(manifest["package_published"])
+        self.assertFalse(manifest["pages_enabled"])
+        self.assertEqual(manifest["distribution_status"], "PUBLIC_DEVELOPMENT_NO_FORMAL_RELEASE")
+        self.assertTrue(manifest["remote_push"])
+        self.assertEqual(manifest["main_commit_at_phase_start"], "82f819f4f5491f5daffb510c0c6ab6a7328dd6e6")
+        self.assertEqual(manifest["main_tree_at_phase_start"], "a612d2f58a8e8f2a53e06ec3a61ae1675068870c")
+        self.assertEqual(manifest["post_merge_ci_run"], 33423783473)
         self.assertFalse(manifest["public_release_eligible"])
-        self.assertEqual(manifest["rights_hold_count"], 158)
+        self.assertEqual(manifest["rights_active_count"], 164)
+        self.assertEqual(manifest["rights_hold_count"], 166)
         self.assertEqual(manifest["rights_clear_count"], 0)
 
         with (ROOT / "PUBLIC_CLAIM_LEDGER.csv").open(encoding="utf-8", newline="") as handle:
@@ -259,6 +424,9 @@ class RootPackageTests(unittest.TestCase):
         self.assertEqual(release_claim["status"], "DEFERRED")
         self.assertEqual(release_claim["public_status"], "HOLD")
         self.assertNotIn("LICENSE_NOT_YET_SELECTED.md", release_claim["evidence_reference"])
+        self.assertIn("166 rights rows remain HOLD", release_claim["limitation"])
+        self.assertIn("formal", release_claim["limitation"].casefold())
+        self.assertIn("public", release_claim["limitation"].casefold())
         for token in ("RIGHTS_EVIDENCE_MATRIX.csv", "LICENSE", "LICENSE_SCOPE.md", "THIRD_PARTY_NOTICES.md"):
             self.assertIn(token, release_claim["evidence_reference"])
 
@@ -308,6 +476,8 @@ class BuildBackendTests(unittest.TestCase):
                 metadata = archive.read(f"{backend.DIST_INFO}/METADATA")
                 self.assertNotIn(b"Requires-Dist:", metadata)
                 self.assertIn(b"Metadata-Version: 2.4\n", metadata)
+                self.assertIn(b"Version: 0.1.0a0.dev4\n", metadata)
+                self.assertIn(b"Summary: Public development alpha", metadata)
                 self.assertIn(f"License-Expression: {LICENSE_EXPRESSION}\n".encode(), metadata)
                 self.assertNotIn(b"Classifier: License :: OSI Approved :: Mozilla Public License 2.0", metadata)
                 self.assertIn(b"License-File: LICENSE\n", metadata)
@@ -329,8 +499,13 @@ class BuildBackendTests(unittest.TestCase):
                     "LICENSE", "licenses/Unicode-3.0.txt", "LICENSE_SCOPE.md", "NOTICE",
                     "THIRD_PARTY_NOTICES.md", "AI_ASSISTANCE_DISCLOSURE.md", "CONTRIBUTORS.md",
                     "DEPENDENCIES.md",
+                    *PUBLIC_DEVELOPMENT_DOCUMENTS,
                 ):
                     self.assertIn(f"{backend.SDIST_ROOT}/{relative}", names)
+                    if relative in PUBLIC_DEVELOPMENT_DOCUMENTS:
+                        archived = archive.extractfile(f"{backend.SDIST_ROOT}/{relative}")
+                        self.assertIsNotNone(archived)
+                        self.assertEqual(archived.read(), (ROOT / relative).read_bytes())
                 self.assertIn(
                     f"{backend.SDIST_ROOT}/components/Sophia/python/src/sophia/triadic/totality_audit.py",
                     names,
@@ -339,6 +514,7 @@ class BuildBackendTests(unittest.TestCase):
                 self.assertIsNotNone(pkg_info)
                 metadata = pkg_info.read()
                 self.assertIn(b"Metadata-Version: 2.4\n", metadata)
+                self.assertIn(b"Version: 0.1.0a0.dev4\n", metadata)
                 self.assertIn(f"License-Expression: {LICENSE_EXPRESSION}\n".encode(), metadata)
                 self.assertNotIn(b"Classifier: License :: OSI Approved :: Mozilla Public License 2.0", metadata)
             self.assertEqual(hashlib.sha256(wa.read_bytes()).hexdigest(), hashlib.sha256(wb.read_bytes()).hexdigest())
@@ -349,7 +525,8 @@ class BuildBackendTests(unittest.TestCase):
         project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
         self.assertEqual(project["build-system"]["requires"], [])
         self.assertEqual(project["project"]["dependencies"], [])
-        self.assertEqual(project["project"]["version"], "0.1.0a0.dev3")
+        self.assertEqual(project["project"]["version"], "0.1.0a0.dev4")
+        self.assertIn("Public development alpha", project["project"]["description"])
         self.assertEqual(project["project"]["license"], LICENSE_EXPRESSION)
         self.assertEqual(project["project"]["license-files"], ["LICENSE", "licenses/Unicode-3.0.txt"])
         self.assertNotIn(
@@ -357,6 +534,22 @@ class BuildBackendTests(unittest.TestCase):
             project["project"]["classifiers"],
         )
         self.assertEqual(project["project"]["scripts"]["triadicbrain"], "triadicbrain.cli:main")
+        self.assertEqual(
+            project["tool"]["triadicbrain"]["distribution-status"],
+            "PUBLIC_DEVELOPMENT_NO_FORMAL_RELEASE",
+        )
+        self.assertEqual(project["tool"]["triadicbrain"]["repository-visibility"], "PUBLIC")
+        self.assertTrue(project["tool"]["triadicbrain"]["source-publicly-available"])
+        self.assertFalse(project["tool"]["triadicbrain"]["formal-release-created"])
+        self.assertFalse(project["tool"]["triadicbrain"]["package-published"])
+        self.assertFalse(project["tool"]["triadicbrain"]["pages-enabled"])
+
+    def test_documentation_build_inventory_is_exact_and_links_are_local(self) -> None:
+        builder = _docs_builder()
+        self.assertEqual(len(builder.DOCS), 18)
+        self.assertEqual(len(builder.DOCS), len(set(builder.DOCS)))
+        self.assertEqual(set(PUBLIC_DEVELOPMENT_DOCUMENTS).issubset(builder.DOCS), True)
+        self.assertEqual(builder.internal_link_errors(ROOT), [])
 
 
 if __name__ == "__main__":

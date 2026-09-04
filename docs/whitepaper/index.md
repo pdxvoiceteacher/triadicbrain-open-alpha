@@ -1,11 +1,28 @@
 # Triadic Brain: Local AI You Can Inspect Before You Trust
 
-**Private alpha-staging whitepaper**  
-**Public rights: HOLD · Authority effect: NONE**
+**Status:** public development alpha
+**Formal GitHub Release:** none
+**Published package:** none
+**Default demonstration:** deterministic offline fixture
+**Live model invoked by default:** no
+**Public-release readiness:** HOLD
+**Authority effect:** NONE
 
-MPL-2.0 is selected as the primary private-candidate license, while Unicode-3.0
-applies to embedded Unicode data. This selection does not clear any of the 158
-rights HOLD rows or authorize public release.
+> This evolving whitepaper distinguishes three things:
+>
+> 1. architecture and source that are implemented;
+> 2. behavior that has been executed and tested in an identified environment;
+> 3. research hypotheses and future product targets.
+>
+> The root demo uses fixed Sophia- and Atlas-labeled role fixtures. It does not
+> invoke the inherited Sophia or Atlas implementations or a model provider.
+> The deeper source route exercises more of the governed architecture with one
+> fixed source task and a captured candidate. Neither route certifies truth.
+
+The repository is public and cloneable, but no formal GitHub Release, package
+publication, hosted service, or production deployment has been created. Internal
+rights rows remain HOLD as a formal-release/provenance control; the applicable
+license texts govern the files already made public.
 
 ## The user problem
 
@@ -31,8 +48,8 @@ permission merely because an earlier component produced a receipt.
 
 ## One deterministic fixture run
 
-**[IMPLEMENTED]** The private alpha includes a synthetic contract fixture that
-emits the roles in this public contract:
+**[IMPLEMENTED]** The public development alpha includes a synthetic contract
+fixture that emits the roles in this public contract:
 
 ```text
 task
@@ -78,10 +95,11 @@ autonomous action.
 
 ## Evaluation evidence
 
-**[PROPOSED]** OA-01 requires reproducible source and wheel builds, clean
-installs, developer-checkout import exclusion, deterministic fixture replay,
-contract and nonauthority tests, loopback security tests, casefold and wheel
-boundary checks, resource parity, privacy scans, and documentation validation.
+**[PROPOSED]** The public development candidate requires reproducible source and
+wheel builds, clean installs, developer-checkout import exclusion,
+deterministic fixture replay, contract and nonauthority tests, loopback security
+tests, casefold and wheel boundary checks, resource parity, privacy scans, and
+documentation validation.
 The exact review handoff records what ran, where it ran, and the first failed
 gate if any.
 
@@ -103,10 +121,10 @@ of scientific validity in this alpha.
 
 ## Roadmap and governance of change
 
-**[PROPOSED]** The next meaningful steps are independent exact-hash review,
-human rights attestation, verification of the selected license and notice
-posture, clean Windows acceptance, and separately authorized
-local-provider/usability studies.
+**[PROPOSED]** The next meaningful product step is an ordinary-user path for a
+user-selected local source, task, captured candidate, bounded human decision,
+and verifiable export. Clean-machine acceptance and any local-provider,
+persistent-memory, usability, or accessibility work remain separately governed.
 
 **[IMPLEMENTED]** Candidate governance is identity-specific: source commit and
 tree, projected paths and blobs, schemas, tests, build hashes, and human

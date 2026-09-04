@@ -1,8 +1,8 @@
 # Notice implementation and review plan
 
-**Status:** RL-02 implementation candidate assembled for independent review
+**Status:** implemented notice posture in public development source
 
-**Public release:** HOLD
+**Formal-release readiness:** HOLD
 **Runtime authority effect:** NONE
 
 ## Implemented candidate surface
@@ -28,8 +28,10 @@
 The review must confirm exact hashes, unchanged range values and SPDX headers,
 notice accuracy, contributor identity treatment, package metadata and members,
 rights/lineage topology, deterministic builds, offline-demo stability, action
-pins, and the no-provider/no-remote-mutation boundary. Every rights row remains
-HOLD and public-release-ineligible until separate authority says otherwise.
+pins, and the no-provider boundary. All 166 rights rows remain HOLD and
+formal-release-ineligible until separate authority says otherwise.
 
+The repository source is publicly available under the applicable license terms.
 This plan does not claim legal compliance, production readiness, or truth
-certification and does not authorize release or publication.
+certification and does not create a formal release, package publication, Pages
+site, hosted service, or deployment.
